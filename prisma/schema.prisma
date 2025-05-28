@@ -15,9 +15,61 @@ datasource db {
 }
 
 model Note {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   title     String
-  content   String?  @db.Text
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  content   String?   @db.Text
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  tags      NoteTag[]
+}
+
+enum PriorityLevel {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+model Todo {
+  id          String         @id @default(cuid())
+  title       String
+  status      Boolean        @default(false)
+  description String?        @db.Text
+  dueDate     DateTime?
+  priority    PriorityLevel?
+  tags        TodoTag[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model Tag {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  color       String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  description String?
+
+  notes NoteTag[]
+  todos TodoTag[]
+}
+
+model NoteTag {
+  noteId String
+  tagId  String
+
+  note Note @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([noteId, tagId])
+}
+
+model TodoTag {
+  todoId String
+  tagId  String
+
+  todo Todo @relation(fields: [todoId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([todoId, tagId])
 }
