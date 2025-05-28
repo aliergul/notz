@@ -11,8 +11,8 @@ import {
 
 const links = [
   { name: "Dashboard", href: "/dashboard", icon: HomeIcon },
-  { name: "Notlar", href: "/notes", icon: NewspaperIcon },
-  { name: "Yapılacaklar", href: "/todos", icon: ListBulletIcon },
+  { name: "Notes", href: "/notes", icon: NewspaperIcon },
+  { name: "To-Do", href: "/todos", icon: ListBulletIcon },
 ];
 
 export default function NavLinks() {

@@ -1,7 +1,6 @@
-import { Button } from "@/app/ui/button";
 import TodoCard from "@/app/ui/todos/todo-card";
+import TodoCreateButton from "@/app/ui/todos/todo-create-button";
 import TodoHeader from "@/app/ui/todos/todo-header";
-import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import Color from "color";
 
 export default async function Todos() {
@@ -11,12 +10,7 @@ export default async function Todos() {
 
   return (
     <main className="w-full mt-5 grid gap-6">
-      <div id="create-task">
-        <Button buttonType="default">
-          <PlusCircleIcon className="h-5 w-5 mr-2" />
-          Create a new task
-        </Button>
-      </div>
+      <TodoCreateButton />
       <div className="flex justify-between gap-2">
         <div
           className="bg-red-300 w-1/3 p-2 rounded-lg"
