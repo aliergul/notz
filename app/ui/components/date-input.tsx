@@ -10,8 +10,6 @@ import "react-datepicker/dist/react-datepicker.css";
 interface DateInputProps {
   label: string;
   name: string;
-  value: Date | null;
-  onChange: (date: Date | null) => void;
   placeholder?: string;
   errorMessage?: string;
   className?: string;
@@ -22,8 +20,6 @@ interface DateInputProps {
 export default function DateInput({
   label,
   name,
-  value,
-  onChange,
   placeholder = "Tarih Seçin",
   errorMessage,
   className,
@@ -32,6 +28,7 @@ export default function DateInput({
 }: DateInputProps) {
   const inputId = id || name;
   const hasError = !!errorMessage;
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   return (
     <Field className={clsx("", className)}>
@@ -46,9 +43,8 @@ export default function DateInput({
       </Label>
       <DatePicker
         id={inputId}
-        name="due-date"
-        selected={value}
-        onChange={onChange}
+        selected={selectedDate}
+        onChange={(date: Date | null) => setSelectedDate(date)}
         dateFormat={"dd/MM/yyyy"}
         disabled={disabled}
         placeholderText={placeholder}
@@ -62,6 +58,11 @@ export default function DateInput({
           "sm:text-sm sm:leading-6",
           "cursor-pointer"
         )}
+      />
+      <input
+        type="hidden"
+        name={name}
+        value={selectedDate ? selectedDate.toISOString() : ""}
       />
     </Field>
   );

@@ -1,3 +1,4 @@
+import { getTodos } from "@/app/lib/todo-actions";
 import TodoCard from "@/app/ui/todos/todo-card";
 import TodoCreateButton from "@/app/ui/todos/todo-create-button";
 import TodoHeader from "@/app/ui/todos/todo-header";
@@ -8,6 +9,9 @@ export default async function Todos() {
   const inProgressColor = Color("#cbe2f0");
   const doneColor = Color("#d4e8d6");
 
+  const todos = await getTodos();
+  console.log("todos", todos);
+  //console.log("dueDate", todos[0].dueDate?.toLocaleDateString());
   return (
     <main className="w-full mt-5 grid gap-6">
       <TodoCreateButton />
