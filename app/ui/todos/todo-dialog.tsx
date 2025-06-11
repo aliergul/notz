@@ -8,10 +8,11 @@ import {
   Transition,
   TransitionChild,
 } from "@headlessui/react";
-import React, { Dispatch, Fragment, SetStateAction } from "react";
+import React, { Dispatch, Fragment, SetStateAction, useState } from "react";
 import { Button } from "../button";
 import Input from "../input";
 import Textarea from "../textarea";
+import DateInput from "../components/date-input";
 
 interface TodoDialogProps {
   isOpen: boolean;
@@ -19,14 +20,42 @@ interface TodoDialogProps {
 }
 
 export default function TodoDialog({ isOpen, setOpen }: TodoDialogProps) {
+  const [title, setTitle] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [dueDate, setDueDate] = useState<Date | null>(new Date());
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+    const submittedTitle = formData.get("title") as string;
+    const submittedDescription = formData.get("description") as string;
+
+    console.log("Gönderilen Veriler:", {
+      title: title,
+      description: description,
+      dueDate: dueDate ? dueDate.toISOString() : null,
+    });
+
+    setTitle("");
+    setDescription("");
+    setDueDate(null);
+
+    handleClose();
+  };
+
   return (
     <Transition appear show={isOpen} as={Fragment}>
-      <Dialog as="div" className="relative z-10" onClose={() => setOpen(false)}>
+      <Dialog as="div" className="relative z-10" onClose={handleClose}>
         {/* Backdrop */}
         <TransitionChild>
           <div
             className="fixed inset-0 bg-black/30 transition duration-300 data-closed:opacity-0"
-            onClick={() => setOpen(false)}
+            onClick={handleClose}
           />
         </TransitionChild>
 
@@ -58,26 +87,36 @@ export default function TodoDialog({ isOpen, setOpen }: TodoDialogProps) {
                 </p>
 
                 <div className="mt-4">
-                  <form
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      console.log("add");
-                      setOpen(false);
-                    }}
-                    className="space-y-4"
-                  >
+                  <form onSubmit={handleSubmit} className="space-y-4">
                     <Input
                       label="Title"
                       name="title"
                       placeholder="Todo Title"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      required
                     />
                     <Textarea
                       label="Description"
                       name="description"
                       placeholder="Todo Description"
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                    />
+
+                    <DateInput
+                      label="Task Due Date"
+                      name="due-date"
+                      value={dueDate}
+                      placeholder="Please pick a date"
+                      onChange={(date) => setDueDate(date)}
                     />
                     <div className="flex justify-end gap-2 mt-6">
-                      <Button buttonType="error" type="button">
+                      <Button
+                        buttonType="error"
+                        type="button"
+                        onClick={handleClose}
+                      >
                         Cancel
                       </Button>
                       <Button buttonType="default" type="submit">
