@@ -12,6 +12,7 @@ export default function Home() {
       }}
     >
       <h1>Not ve Todo Uygulaması</h1>
+      {/* test */}
       <LoginButton />
     </main>
   );
