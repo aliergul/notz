@@ -1,5 +1,3 @@
-// components/auth/LoginButton.tsx
-
 "use client";
 
 import { useSession, signIn, signOut } from "next-auth/react";
@@ -25,7 +23,9 @@ export default function LoginButton() {
           />
         )}
         <p>Merhaba, {session.user?.name}</p>
-        <button onClick={() => signOut()}>Çıkış Yap</button>
+        <button onClick={() => signOut({ callbackUrl: "/", redirect: true })}>
+          Çıkış Yap
+        </button>
       </div>
     );
   }
