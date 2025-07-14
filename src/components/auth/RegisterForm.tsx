@@ -13,12 +13,14 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { registerUser } from "@/actions/auth";
 import ButtonSpinner from "../spinner";
+import { useTranslations } from "next-intl";
 
 interface RegisterFormProps {
   onToggleView: () => void;
 }
 
 export function RegisterForm({ onToggleView }: RegisterFormProps) {
+  const t = useTranslations("login_signup");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -47,13 +49,13 @@ export function RegisterForm({ onToggleView }: RegisterFormProps) {
   return (
     <Card className="w-full max-w-md border-0 shadow-none sm:border sm:shadow-sm">
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl">Hesap Oluştur</CardTitle>
-        <CardDescription>Başlamak için bilgilerinizi girin.</CardDescription>
+        <CardTitle className="text-2xl">{t("create_account")}</CardTitle>
+        <CardDescription>{t("enter_your_credentials")}</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
-            <Label htmlFor="name">İsim</Label>
+            <Label htmlFor="name">{t("name")}</Label>
             <Input
               id="name"
               name="name"
@@ -63,7 +65,7 @@ export function RegisterForm({ onToggleView }: RegisterFormProps) {
             />
           </div>
           <div className="flex flex-col gap-2">
-            <Label htmlFor="email">E-posta</Label>
+            <Label htmlFor="email">{t("email")}</Label>
             <Input
               id="email"
               name="email"
@@ -73,7 +75,7 @@ export function RegisterForm({ onToggleView }: RegisterFormProps) {
             />
           </div>
           <div className="flex flex-col gap-2">
-            <Label htmlFor="password">Şifre</Label>
+            <Label htmlFor="password">{t("password")}</Label>
             <Input
               id="password"
               name="password"
@@ -91,16 +93,17 @@ export function RegisterForm({ onToggleView }: RegisterFormProps) {
             className="w-full cursor-pointer basic-transition"
             disabled={isLoading}
           >
-            {isLoading && <ButtonSpinner />}Kayıt Ol
+            {isLoading && <ButtonSpinner />}
+            {t("sign_up")}
           </Button>
         </form>
         <div className="mt-4 text-center text-sm">
-          Zaten bir hesabın var mı?{" "}
+          {t("already_have_an_account")}
           <button
             onClick={onToggleView}
             className="font-semibold underline cursor-pointer"
           >
-            Giriş Yap
+            {t("login")}
           </button>
         </div>
       </CardContent>

@@ -1,0 +1,23 @@
+{
+  "landing_page": {
+    "main_title": "Düşüncelerinizi ve Görevlerinizi Zahmetsizce Organize Edin",
+    "description": "Notz, not alma ve görev yönetimi için minimalist ve güçlü bir çözümdür. Fikirlerinizi yakalayın, projelerinizi takip edin ve odaklanın.",
+    "copyright": "Tüm hakları saklıdır."
+  },
+  "login_signup": {
+    "login": "Giriş Yap",
+    "login_description": "Hesabınıza erişmek için devam edin.",
+    "login_with_google": "Google ile Giriş Yap",
+    "login_with_github": "Github ile Giriş Yap",
+    "login_with_apple": "Apple ile Giriş Yap",
+    "continue_with_email": "Veya e-posta ile devam et",
+    "email": "E-posta",
+    "password": "Şifre",
+    "dont_have_an_account": "Hesabın yok mu?",
+    "sign_up": "Kayıt Ol",
+    "create_account": "Hesap Oluştur",
+    "enter_your_credentials": "Başlamak için bilgilerinizi girin.",
+    "name": "İsim",
+    "already_have_an_account": "Zaten hesabın var mı?"
+  }
+}

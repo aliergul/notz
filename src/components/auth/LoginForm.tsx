@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub, FaApple } from "react-icons/fa";
 import ButtonSpinner from "../spinner";
+import { useTranslations } from "next-intl";
 
 interface LoginFormProps {
   onToggleView: () => void;
@@ -24,6 +25,7 @@ interface LoginFormProps {
 
 export function LoginForm({ onToggleView }: LoginFormProps) {
   const router = useRouter();
+  const t = useTranslations("login_signup");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -54,8 +56,8 @@ export function LoginForm({ onToggleView }: LoginFormProps) {
   return (
     <Card className="w-full max-w-md border-0 shadow-none sm:border sm:shadow-sm">
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl">Giriş Yap</CardTitle>
-        <CardDescription>Hesabınıza erişmek için devam edin.</CardDescription>
+        <CardTitle className="text-2xl">{t("login")}</CardTitle>
+        <CardDescription>{t("login_description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-4">
@@ -65,7 +67,7 @@ export function LoginForm({ onToggleView }: LoginFormProps) {
               variant="outline"
               size="icon"
               className="basic-transition h-12 w-12 cursor-pointer"
-              title="Google ile Giriş Yap"
+              title={t("login_with_google")}
             >
               <FcGoogle className="size-6" />
             </Button>
@@ -74,7 +76,7 @@ export function LoginForm({ onToggleView }: LoginFormProps) {
               variant="outline"
               size="icon"
               className="basic-transition h-12 w-12 cursor-pointer"
-              title="GitHub ile Giriş Yap"
+              title={t("login_with_github")}
               disabled
             >
               <FaGithub className="size-6" />
@@ -84,7 +86,7 @@ export function LoginForm({ onToggleView }: LoginFormProps) {
               variant="outline"
               size="icon"
               className="basic-transition h-12 w-12 cursor-pointer"
-              title="Apple ile Giriş Yap"
+              title={t("login_with_apple")}
               disabled
             >
               <FaApple className="size-6" />
@@ -97,7 +99,7 @@ export function LoginForm({ onToggleView }: LoginFormProps) {
             </div>
             <div className="relative flex justify-center text-xs uppercase">
               <span className="bg-background px-2 text-muted-foreground">
-                Veya e-posta ile devam et
+                {t("continue_with_email")}{" "}
               </span>
             </div>
           </div>
@@ -107,7 +109,7 @@ export function LoginForm({ onToggleView }: LoginFormProps) {
             autoComplete="off"
           >
             <div className="flex flex-col gap-2">
-              <Label htmlFor="email">E-posta</Label>
+              <Label htmlFor="email">{t("email")}</Label>
               <Input
                 id="email"
                 name="email"
@@ -118,7 +120,7 @@ export function LoginForm({ onToggleView }: LoginFormProps) {
               />
             </div>
             <div className="flex flex-col gap-2">
-              <Label htmlFor="password">Şifre</Label>
+              <Label htmlFor="password">{t("password")}</Label>
               <Input
                 id="password"
                 name="password"
@@ -140,17 +142,17 @@ export function LoginForm({ onToggleView }: LoginFormProps) {
               disabled={isLoading}
             >
               {isLoading && <ButtonSpinner />}
-              Giriş Yap
+              {t("login")}
             </Button>
           </form>
         </div>
         <div className="mt-4 text-center text-sm">
-          Hesabın yok mu?{" "}
+          {t("dont_have_an_account")}{" "}
           <button
             onClick={onToggleView}
             className="font-semibold underline cursor-pointer"
           >
-            Kayıt Ol
+            {t("sign_up")}
           </button>
         </div>
       </CardContent>
