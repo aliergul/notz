@@ -13,9 +13,7 @@ export default async function Home() {
   return (
     <main className="grid min-h-screen w-full lg:grid-cols-2">
       <div className="hidden bg-gray-100 p-12 dark:bg-gray-800 lg:flex lg:flex-col lg:justify-between">
-        <div className="flex items-center gap-2 text-2xl font-bold">
-          <span>Notz</span>
-        </div>
+        <div className="flex items-center gap-2 text-2xl font-bold"></div>
         <div>
           <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
             Düşüncelerinizi ve Görevlerinizi Zahmetsizce Organize Edin

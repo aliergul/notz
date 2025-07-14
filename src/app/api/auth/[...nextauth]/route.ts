@@ -1,41 +1,8 @@
-// src/app/api/auth/[...nextauth]/route.ts
+import NextAuth from "next-auth";
+import { authOptions } from "@/lib/auth";
 
-import NextAuth, { AuthOptions } from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
-import { PrismaAdapter } from "@auth/prisma-adapter";
-
-import prisma from "@/lib/prisma";
-
-const authOptions: AuthOptions = {
-  adapter: PrismaAdapter(prisma),
-
-  providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    }),
-  ],
-
-  session: {
-    strategy: "jwt",
-  },
-
-  callbacks: {
-    jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-      }
-      return token;
-    },
-    session({ session, token }) {
-      if (session.user) {
-        session.user.id = token.id as string;
-      }
-      return session;
-    },
-  },
-};
-
+// NextAuth'ı merkezi yapılandırmamızla başlatıyoruz.
 const handler = NextAuth(authOptions);
 
+// API rotası için GET ve POST metodlarını dışa aktarıyoruz.
 export { handler as GET, handler as POST };

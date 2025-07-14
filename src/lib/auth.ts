@@ -22,22 +22,25 @@ export const authOptions: AuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          throw new Error("Lütfen e-posta ve şifrenizi girin.");
+          return null;
+          // throw new Error("Lütfen e-posta ve şifrenizi girin.");
         }
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
         });
         if (!user || !user.password) {
-          throw new Error(
-            "Bu e-posta adresi ile kayıtlı bir kullanıcı bulunamadı."
-          );
+          return null;
+          // throw new Error(
+          //   "Bu e-posta adresi ile kayıtlı bir kullanıcı bulunamadı."
+          // );
         }
         const isPasswordCorrect = await bcrypt.compare(
           credentials.password,
           user.password
         );
         if (!isPasswordCorrect) {
-          throw new Error("Hatalı şifre.");
+          return null;
+          // throw new Error("Hatalı şifre.");
         }
         return user;
       },

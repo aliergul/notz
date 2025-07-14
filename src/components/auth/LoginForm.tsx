@@ -1,3 +1,4 @@
+// src/components/auth/LoginForm.tsx
 "use client";
 
 import { useState } from "react";
@@ -13,6 +14,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { FcGoogle } from "react-icons/fc";
+import { FaGithub, FaApple } from "react-icons/fa";
+import ButtonSpinner from "../spinner";
 
 interface LoginFormProps {
   onToggleView: () => void;
@@ -55,9 +59,38 @@ export function LoginForm({ onToggleView }: LoginFormProps) {
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-4">
-          <Button variant="outline" onClick={() => signIn("google")}>
-            Google ile Giriş Yap
-          </Button>
+          <div className="flex w-full items-center justify-center gap-4">
+            <Button
+              onClick={() => signIn("google")}
+              variant="outline"
+              size="icon"
+              className="basic-transition h-12 w-12 cursor-pointer"
+              title="Google ile Giriş Yap"
+            >
+              <FcGoogle className="size-6" />
+            </Button>
+            <Button
+              onClick={() => signIn("github")}
+              variant="outline"
+              size="icon"
+              className="basic-transition h-12 w-12 cursor-pointer"
+              title="GitHub ile Giriş Yap"
+              disabled
+            >
+              <FaGithub className="size-6" />
+            </Button>
+            <Button
+              onClick={() => signIn("apple")}
+              variant="outline"
+              size="icon"
+              className="basic-transition h-12 w-12 cursor-pointer"
+              title="Apple ile Giriş Yap"
+              disabled
+            >
+              <FaApple className="size-6" />
+            </Button>
+          </div>
+
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
               <span className="w-full border-t" />
@@ -68,32 +101,55 @@ export function LoginForm({ onToggleView }: LoginFormProps) {
               </span>
             </div>
           </div>
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <form
+            onSubmit={handleSubmit}
+            className="flex flex-col gap-4"
+            autoComplete="off"
+          >
             <div className="flex flex-col gap-2">
               <Label htmlFor="email">E-posta</Label>
               <Input
                 id="email"
                 name="email"
                 type="email"
+                placeholder="john@doe.com"
+                autoComplete="off"
                 required
-                placeholder=""
               />
             </div>
             <div className="flex flex-col gap-2">
               <Label htmlFor="password">Şifre</Label>
-              <Input id="password" name="password" type="password" required />
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                placeholder="&bull;&bull;&bull;&bull;&bull;&bull;"
+                required
+              />
             </div>
-            {error && (
-              <p className="text-sm font-medium text-red-500">{error}</p>
-            )}
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Giriş Yapılıyor..." : "Giriş Yap"}
+            <div className="h-5">
+              {error && (
+                <p className="text-sm font-medium text-red-500 animate-in fade-in">
+                  {error}
+                </p>
+              )}
+            </div>
+            <Button
+              type="submit"
+              className="w-full basic-transition cursor-pointer"
+              disabled={isLoading}
+            >
+              {isLoading && <ButtonSpinner />}
+              Giriş Yap
             </Button>
           </form>
         </div>
         <div className="mt-4 text-center text-sm">
           Hesabın yok mu?{" "}
-          <button onClick={onToggleView} className="font-semibold underline">
+          <button
+            onClick={onToggleView}
+            className="font-semibold underline cursor-pointer"
+          >
             Kayıt Ol
           </button>
         </div>
