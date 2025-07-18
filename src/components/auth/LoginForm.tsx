@@ -24,8 +24,9 @@ interface LoginFormProps {
 }
 
 export function LoginForm({ onToggleView }: LoginFormProps) {
+  const t_form = useTranslations("login_signup");
+  const t_notify = useTranslations("notifications");
   const router = useRouter();
-  const t = useTranslations("login_signup");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -47,7 +48,7 @@ export function LoginForm({ onToggleView }: LoginFormProps) {
     setIsLoading(false);
 
     if (result?.error) {
-      setError("Giriş bilgileri hatalı. Lütfen kontrol edin.");
+      setError(t_notify("invalid_credentials"));
     } else if (result?.ok) {
       router.push("/dashboard");
     }
@@ -56,8 +57,8 @@ export function LoginForm({ onToggleView }: LoginFormProps) {
   return (
     <Card className="w-full max-w-md border-0 shadow-none sm:border sm:shadow-sm">
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl">{t("login")}</CardTitle>
-        <CardDescription>{t("login_description")}</CardDescription>
+        <CardTitle className="text-2xl">{t_form("login")}</CardTitle>
+        <CardDescription>{t_form("login_description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-4">
@@ -67,7 +68,7 @@ export function LoginForm({ onToggleView }: LoginFormProps) {
               variant="outline"
               size="icon"
               className="basic-transition h-12 w-12 cursor-pointer"
-              title={t("login_with_google")}
+              title={t_form("login_with_google")}
             >
               <FcGoogle className="size-6" />
             </Button>
@@ -76,7 +77,7 @@ export function LoginForm({ onToggleView }: LoginFormProps) {
               variant="outline"
               size="icon"
               className="basic-transition h-12 w-12 cursor-pointer"
-              title={t("login_with_github")}
+              title={t_form("login_with_github")}
               disabled
             >
               <FaGithub className="size-6" />
@@ -86,7 +87,7 @@ export function LoginForm({ onToggleView }: LoginFormProps) {
               variant="outline"
               size="icon"
               className="basic-transition h-12 w-12 cursor-pointer"
-              title={t("login_with_apple")}
+              title={t_form("login_with_apple")}
               disabled
             >
               <FaApple className="size-6" />
@@ -99,7 +100,7 @@ export function LoginForm({ onToggleView }: LoginFormProps) {
             </div>
             <div className="relative flex justify-center text-xs uppercase">
               <span className="bg-background px-2 text-muted-foreground">
-                {t("continue_with_email")}{" "}
+                {t_form("continue_with_email")}{" "}
               </span>
             </div>
           </div>
@@ -109,7 +110,7 @@ export function LoginForm({ onToggleView }: LoginFormProps) {
             autoComplete="off"
           >
             <div className="flex flex-col gap-2">
-              <Label htmlFor="email">{t("email")}</Label>
+              <Label htmlFor="email">{t_form("email")}</Label>
               <Input
                 id="email"
                 name="email"
@@ -120,7 +121,7 @@ export function LoginForm({ onToggleView }: LoginFormProps) {
               />
             </div>
             <div className="flex flex-col gap-2">
-              <Label htmlFor="password">{t("password")}</Label>
+              <Label htmlFor="password">{t_form("password")}</Label>
               <Input
                 id="password"
                 name="password"
@@ -142,17 +143,17 @@ export function LoginForm({ onToggleView }: LoginFormProps) {
               disabled={isLoading}
             >
               {isLoading && <ButtonSpinner />}
-              {t("login")}
+              {t_form("login")}
             </Button>
           </form>
         </div>
         <div className="mt-4 text-center text-sm">
-          {t("dont_have_an_account")}{" "}
+          {t_form("dont_have_an_account")}{" "}
           <button
             onClick={onToggleView}
             className="font-semibold underline cursor-pointer"
           >
-            {t("sign_up")}
+            {t_form("sign_up")}
           </button>
         </div>
       </CardContent>

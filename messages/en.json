@@ -19,5 +19,11 @@
     "enter_your_credentials": "enter_your_credentials.",
     "name": "name",
     "already_have_an_account": "already_have_an_account"
+  },
+  "notifications": {
+    "invalid_credentials": "invalid_credentials",
+    "email_in_use": "email_in_use",
+    "registration_failed": "registration_failed",
+    "registration_success": "registration_success"
   }
 }

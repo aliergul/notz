@@ -19,5 +19,11 @@
     "enter_your_credentials": "Başlamak için bilgilerinizi girin.",
     "name": "İsim",
     "already_have_an_account": "Zaten hesabın var mı?"
+  },
+  "notifications": {
+    "invalid_credentials": "Girdiğiniz e-posta veya şifre hatalı.",
+    "email_in_use": "Bu e-posta adresi zaten kullanılıyor.",
+    "registration_failed": "Kayıt sırasında bir hata oluştu. Lütfen tekrar deneyin.",
+    "registration_success": "Hesap başarıyla oluşturuldu! Giriş sayfasına yönlendiriliyorsunuz..."
   }
 }

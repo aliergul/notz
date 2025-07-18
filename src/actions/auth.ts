@@ -29,7 +29,7 @@ export async function registerUser(formData: FormData) {
   });
 
   if (existingUser) {
-    return { error: "Bu e-posta adresi zaten kullanılıyor." };
+    return { error: "email_in_use" };
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -43,9 +43,9 @@ export async function registerUser(formData: FormData) {
       },
     });
 
-    return { success: "Hesap başarıyla oluşturuldu! Giriş yapabilirsiniz." };
+    return { success: "registration_success" };
   } catch (err) {
     console.error(err);
-    return { error: "Bir şeyler ters gitti, lütfen tekrar deneyin." };
+    return { error: "registration_failed" };
   }
 }
