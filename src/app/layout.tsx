@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+// import { Inter } from "next/font/google";
+import { Figtree } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
 import { getLocale, getMessages, getTimeZone } from "next-intl/server";
 
-const inter = Inter({ subsets: ["latin"] });
+// const inter = Inter({ subsets: ["latin"] });
+const figtree = Figtree({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Notz",
@@ -22,7 +24,7 @@ export default async function RootLayout({
 
   return (
     <html lang={locale}>
-      <body className={inter.className}>
+      <body className={figtree.className}>
         <Providers i18n={{ locale, messages, timeZone }}>{children}</Providers>
       </body>
     </html>

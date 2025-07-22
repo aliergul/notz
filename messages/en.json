@@ -25,5 +25,14 @@
     "email_in_use": "email_in_use",
     "registration_failed": "registration_failed",
     "registration_success": "registration_success"
+  },
+  "sidebar_navbar": {
+    "home_page": "home_page",
+    "notes_page": "notes_page",
+    "todos_page": "todos_page",
+    "tags_page": "tags_page",
+    "trash_page": "trash_page",
+    "logout": "logout",
+    "profile": "profile"
   }
 }

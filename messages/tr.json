@@ -25,5 +25,14 @@
     "email_in_use": "Bu e-posta adresi zaten kullanılıyor.",
     "registration_failed": "Kayıt sırasında bir hata oluştu. Lütfen tekrar deneyin.",
     "registration_success": "Hesap başarıyla oluşturuldu! Giriş sayfasına yönlendiriliyorsunuz..."
+  },
+  "sidebar_navbar": {
+    "home_page": "Ana Sayfa",
+    "notes_page": "Notlar",
+    "todos_page": "Yapılacaklar",
+    "tags_page": "Etiketler",
+    "trash_page": "Çöp Kutusu",
+    "logout": "Çıkış Yap",
+    "profile": "Profil"
   }
 }
