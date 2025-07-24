@@ -24,7 +24,11 @@
     "invalid_credentials": "Girdiğiniz e-posta veya şifre hatalı.",
     "email_in_use": "Bu e-posta adresi zaten kullanılıyor.",
     "registration_failed": "Kayıt sırasında bir hata oluştu. Lütfen tekrar deneyin.",
-    "registration_success": "Hesap başarıyla oluşturuldu! Giriş sayfasına yönlendiriliyorsunuz..."
+    "registration_success": "Hesap başarıyla oluşturuldu! Giriş sayfasına yönlendiriliyorsunuz...",
+    "session_not_found": "Oturum bilgileri elde edilirken bir hata ile karşılaşıldı. Daha sonra tekrar deneyin.",
+    "invalid_data_error": "Geçersiz veri girişi yapıldı.",
+    "create_note_unexpected_err": "Not oluşturulurken beklenmedik bir hata ile karşılaşıldı.",
+    "create_note_success": "Not başarıyla oluşturuldu."
   },
   "sidebar_navbar": {
     "home_page": "Ana Sayfa",
@@ -34,5 +38,15 @@
     "trash_page": "Çöp Kutusu",
     "logout": "Çıkış Yap",
     "profile": "Profil"
+  },
+  "notes": {
+    "empty_page": "Henüz hiç notunuz yok. 'Yeni Not' butonuna tıklayarak başlayın!",
+    "my_notes": "Notlarım",
+    "create_note_button": "Yeni Not",
+    "create_note_dialog_title": "Yeni Not Oluştur",
+    "create_note_dialog_desc": "Fikirlerinizi ve görevlerinizi buraya ekleyin.",
+    "note_title": "Başlık",
+    "note_content": "İçerik",
+    "note_save": "Kaydet"
   }
 }
