@@ -28,7 +28,10 @@
     "session_not_found": "session_not_found",
     "invalid_data_error": "invalid_data_error",
     "create_note_unexpected_err": "create_note_unexpected_err",
-    "create_note_success": "create_note_success"
+    "create_note_success": "create_note_success",
+    "not_found_or_unauthorized": "not_found_or_unauthorized",
+    "delete_note_unexpected_err": "delete_note_unexpected_err",
+    "delete_note_success": "delete_note_success"
   },
   "sidebar_navbar": {
     "home_page": "home_page",
@@ -47,6 +50,22 @@
     "create_note_dialog_desc": "create_note_dialog_desc",
     "note_title": "note_title",
     "note_content": "note_content",
-    "note_save": "note_save"
+    "note_save": "note_save",
+    "edit": "edit",
+    "cancel": "cancel",
+    "delete": "delete",
+    "last_update": "last_update",
+    "delete_note_confirmation_title": "delete_note_confirmation_title",
+    "delete_note_confirmation_desc": "delete_note_confirmation_desc"
+  },
+  "trash": {
+    "title": "title",
+    "empty_trash": "empty_trash",
+    "restore": "restore",
+    "delete_permanently": "delete_permanently",
+    "delete_date": "delete_date",
+    "notes": "notes",
+    "tags": "tags",
+    "todos": "todos"
   }
 }

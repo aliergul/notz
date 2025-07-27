@@ -44,6 +44,38 @@ export async function createNote(formData: FormData) {
   }
 
   revalidatePath("/dashboard/notes");
-
   return { success: "create_note_success" };
+}
+
+export async function deleteNote(noteId: string) {
+  const session = await getServerSession(authOptions);
+
+  if (!session?.user?.id) {
+    return { error: "session_not_found" };
+  }
+
+  try {
+    const note = await prisma?.note.findUnique({
+      where: { id: noteId },
+    });
+
+    if (!note || note.userId !== session.user.id) {
+      return { error: "not_found_or_unauthorized" };
+    }
+
+    await prisma?.note.update({
+      where: {
+        id: noteId,
+      },
+      data: {
+        softDelete: true,
+      },
+    });
+  } catch (error) {
+    console.error("Unexpected error during delete note:", error);
+    return { error: "delete_note_unexpected_err" };
+  }
+
+  revalidatePath("/dashboard/notes");
+  return { success: "delete_note_success" };
 }

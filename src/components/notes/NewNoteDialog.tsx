@@ -88,7 +88,7 @@ export default function NewNoteDialog() {
             type="submit"
             form="note-form"
             disabled={isLoading}
-            className="w-full"
+            className="w-full cursor-pointer"
           >
             {isLoading && <ButtonSpinner />}
             {t("note_save")}

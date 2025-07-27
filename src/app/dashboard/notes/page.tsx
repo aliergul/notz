@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import NewNoteDialog from "@/components/notes/NewNoteDialog";
 import { getTranslations } from "next-intl/server";
+import NoteCard from "@/components/notes/NoteCard";
 
 export default async function NotesPage() {
   const t = await getTranslations("notes");
@@ -31,22 +32,15 @@ export default async function NotesPage() {
         </div>
       </div>
 
-      <div className="flex-1 rounded-lg border border-dashed shadow-sm p-4">
+      <div className="flex-1">
         {notes.length === 0 ? (
-          <div className="flex h-full items-center justify-center">
+          <div className="flex h-full items-center justify-center rounded-lg border border-dashed shadow-sm p-4">
             <p className="text-muted-foreground">{t("empty_page")}</p>
           </div>
         ) : (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {notes.map((note) => (
-              <div key={note.id} className="rounded-lg border bg-card p-4">
-                <h3 className="font-semibold">
-                  {note.title || "Başlıksız Not"}
-                </h3>
-                <p className="text-sm text-muted-foreground mt-2 line-clamp-3">
-                  {note.content}
-                </p>
-              </div>
+              <NoteCard key={note.id} note={note} />
             ))}
           </div>
         )}

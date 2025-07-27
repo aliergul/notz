@@ -28,7 +28,10 @@
     "session_not_found": "Oturum bilgileri elde edilirken bir hata ile karşılaşıldı. Daha sonra tekrar deneyin.",
     "invalid_data_error": "Geçersiz veri girişi yapıldı.",
     "create_note_unexpected_err": "Not oluşturulurken beklenmedik bir hata ile karşılaşıldı.",
-    "create_note_success": "Not başarıyla oluşturuldu."
+    "create_note_success": "Not başarıyla oluşturuldu.",
+    "not_found_or_unauthorized": "Not bulunamadı veya bu işlem için yetkiniz yok.",
+    "delete_note_unexpected_err": "Not silinirken beklenmedik bir hata oluştu.",
+    "delete_note_success": "Not başarıyla silindi."
   },
   "sidebar_navbar": {
     "home_page": "Ana Sayfa",
@@ -47,6 +50,22 @@
     "create_note_dialog_desc": "Fikirlerinizi ve görevlerinizi buraya ekleyin.",
     "note_title": "Başlık",
     "note_content": "İçerik",
-    "note_save": "Kaydet"
+    "note_save": "Kaydet",
+    "edit": "Düzenle",
+    "cancel": "İptal",
+    "delete": "Sil",
+    "last_update": "Son Güncelleme",
+    "delete_note_confirmation_title": "Emin misiniz?",
+    "delete_note_confirmation_desc": "Bu not çöp kutusuna taşınacak. Daha sonra isterseniz geri yükleyebilirsiniz."
+  },
+  "trash": {
+    "title": "Çöp Kutusu",
+    "empty_trash": "Çöp kutusu boş...",
+    "restore": "Geri Yükle",
+    "delete_permanently": "Kalıcı Olarak Sil",
+    "delete_date": "Silinme Tarihi",
+    "notes": "Notlar",
+    "tags": "Etiketler",
+    "todos": "Yapılacaklar"
   }
 }
