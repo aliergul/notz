@@ -4,8 +4,7 @@ import { getTranslations } from "next-intl/server";
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Note, Tag, Todo } from "@prisma/client";
-import { useFormatter, useTranslations } from "next-intl";
+import TrashItemCard from "@/components/trash/TrashItemCard";
 
 export default async function TrashPage() {
   const t = await getTranslations("trash");
@@ -80,39 +79,5 @@ export default async function TrashPage() {
         </Tabs>
       )}
     </>
-  );
-}
-
-function TrashItemCard({
-  item,
-}: {
-  item: Note | Todo | Tag;
-  type: "note" | "todo" | "tag";
-}) {
-  const displayName = "title" in item ? item.title : item.name;
-  const t = useTranslations("trash");
-  const format = useFormatter();
-  return (
-    <div className="flex items-center justify-between rounded-lg border p-4">
-      <div>
-        <p className="font-semibold">{displayName}</p>
-        <p className="text-sm text-muted-foreground">
-          {t("delete_date")}:{" "}
-          {format.dateTime(new Date(item.updatedAt), {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
-        </p>
-      </div>
-      <div className="flex gap-2">
-        <button className="text-sm text-blue-500 cursor-pointer">
-          {t("restore")}
-        </button>
-        <button className="text-sm text-red-500 cursor-pointer">
-          {t("delete_permanently")}
-        </button>
-      </div>
-    </div>
   );
 }

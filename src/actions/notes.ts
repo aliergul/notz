@@ -5,11 +5,13 @@ import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
+// Data Validation
 const noteSchema = z.object({
   title: z.string().optional(),
   content: z.string().min(1, "İçerik boş olamaz."),
 });
 
+// Note - Create
 export async function createNote(formData: FormData) {
   const session = await getServerSession(authOptions);
 
@@ -47,7 +49,52 @@ export async function createNote(formData: FormData) {
   return { success: "create_note_success" };
 }
 
-export async function deleteNote(noteId: string) {
+// Note - Update
+export async function updateNote(noteId: string, formData: FormData) {
+  const session = await getServerSession(authOptions);
+
+  if (!session?.user?.id) {
+    return { error: "session_not_found" };
+  }
+
+  const validatedFields = noteSchema.safeParse({
+    title: formData.get("title"),
+    content: formData.get("content"),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      error: "invalid_data_error",
+    };
+  }
+
+  try {
+    const note = await prisma?.note.findUnique({
+      where: { id: noteId },
+    });
+
+    if (!note || note.userId !== session.user.id) {
+      return { error: "not_found_or_unauthorized" };
+    }
+
+    await prisma?.note.update({
+      where: { id: noteId },
+      data: {
+        title: validatedFields.data.title,
+        content: validatedFields.data.content,
+      },
+    });
+  } catch (error) {
+    console.error("Not güncelleme hatası:", error);
+    return { error: "update_note_unexpected_err" };
+  }
+
+  revalidatePath("/dashboard/notes");
+  return { success: "edit_note_success" };
+}
+
+// Note - Soft Delete
+export async function softDeleteNote(noteId: string) {
   const session = await getServerSession(authOptions);
 
   if (!session?.user?.id) {
@@ -72,10 +119,34 @@ export async function deleteNote(noteId: string) {
       },
     });
   } catch (error) {
-    console.error("Unexpected error during delete note:", error);
-    return { error: "delete_note_unexpected_err" };
+    console.error("Unexpected error during soft delete note:", error);
+    return { error: "soft_delete_note_unexpected_err" };
   }
 
   revalidatePath("/dashboard/notes");
-  return { success: "delete_note_success" };
+  return { success: "soft_delete_note_success" };
+}
+
+// Note - Permanent Delete
+export async function deleteNotePermanently(noteId: string) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) return { error: "session_not_found" };
+
+  try {
+    const note = await prisma?.note.findUnique({ where: { id: noteId } });
+    if (!note || note.userId !== session.user.id) {
+      return { error: "not_found_or_unauthorized" };
+    }
+
+    await prisma?.note.delete({
+      where: { id: noteId },
+    });
+  } catch (error) {
+    console.error("Unexpected error during permanent delete note:", error);
+    return { error: "permanent_delete_note_unexpected_err" };
+  }
+
+  revalidatePath("/dashboard/notes");
+  revalidatePath("/dashboard/trash");
+  return { success: "permanent_delete_note_success" };
 }
