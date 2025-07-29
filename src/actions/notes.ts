@@ -85,7 +85,7 @@ export async function updateNote(noteId: string, formData: FormData) {
       },
     });
   } catch (error) {
-    console.error("Not güncelleme hatası:", error);
+    console.error("Unexpected error during update note:", error);
     return { error: "update_note_unexpected_err" };
   }
 

@@ -44,13 +44,13 @@ export default async function TrashPage() {
       ) : (
         <Tabs defaultValue="notes" className="flex-1">
           <TabsList>
-            <TabsTrigger value="notes">
+            <TabsTrigger value="notes" className="cursor-pointer">
               {t("notes")} ({deletedNotes.length})
             </TabsTrigger>
-            <TabsTrigger value="todos">
+            <TabsTrigger value="todos" className="cursor-pointer">
               {t("todos")} ({deletedTodos.length})
             </TabsTrigger>
-            <TabsTrigger value="tags">
+            <TabsTrigger value="tags" className="cursor-pointer">
               {t("tags")} ({deletedTags.length})
             </TabsTrigger>
           </TabsList>

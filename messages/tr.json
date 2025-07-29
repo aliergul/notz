@@ -38,7 +38,13 @@
     "restore_item_unexpected_err": "Öğe geri yüklenirken bir hata oluştu.",
     "restore_item_success": "Öğe başarıyla geri yüklendi.",
     "permanent_delete_item_unexpected_err": "Öğe kalıcı olarak silinirken bir hata oluştu.",
-    "permanent_delete_item_success": "Öğe başarıyla kalıcı olarak silindi."
+    "permanent_delete_item_success": "Öğe başarıyla kalıcı olarak silindi.",
+    "create_todo_unexpected_err": "Yapılacak ögesi oluşturulurken beklenmedik bir hata ile karşılaşıldı.",
+    "create_todo_success": "Yapılacak ögesi başarıyla oluşturuldu.",
+    "update_todo_unexpected_err": "Yapılacak ögesinin durumunu değiştirirken beklenmedik bir hata ile karşılaşıldı.",
+    "update_todo_success": "Yapılacak ögesinin durumu başarıyla değiştirildi.",
+    "soft_delete_todo_unexpected_err": "Yapılacak ögesi çöp kutusuna taşınırken beklenmedik bir hata ile karşılaşıldı.",
+    "soft_delete_todo_success": "Yapılacak ögesi başarı ile çöp kutusuna taşındı."
   },
   "sidebar_navbar": {
     "home_page": "Ana Sayfa",
@@ -83,5 +89,12 @@
     "permanent_delete_confirmation_title": "Kalıcı Olarak Sil?",
     "permanent_delete_confirmation_desc": "Bu işlem geri alınamaz. Bu öğe veritabanından tamamen silinecektir.",
     "cancel": "İptal"
+  },
+  "todos": {
+    "title": "Yapılacaklar",
+    "empty_title": "Henüz bir göreviniz yok",
+    "empty_description": "Yeni bir yapılacak ekleyerek başlayın.",
+    "new_todo_placeholder": "Yeni bir görev ekle...",
+    "add_button": "Ekle"
   }
 }
