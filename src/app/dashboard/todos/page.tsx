@@ -3,8 +3,8 @@ import { getServerSession } from "next-auth";
 import { getTranslations } from "next-intl/server";
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
-import TodoList from "@/components/todos/TodoList";
-import NewTodoForm from "@/components/todos/NewTodoForm";
+import NewTodoDialog from "@/components/todos/NewTodoDialog";
+import TodoBoard from "@/components/todos/TodoBoard";
 
 export default async function TodosPage() {
   const t = await getTranslations("todos");
@@ -18,16 +18,19 @@ export default async function TodosPage() {
       userId: session.user.id,
       softDelete: false,
     },
-    orderBy: [{ status: "asc" }, { updatedAt: "desc" }],
+    orderBy: {
+      createdAt: "asc",
+    },
   });
 
   return (
     <div className="flex flex-col gap-4 h-full">
       <div className="flex items-center">
         <h1 className="text-lg font-semibold md:text-2xl">{t("title")}</h1>
+        <div className="ml-auto">
+          <NewTodoDialog />
+        </div>
       </div>
-
-      <NewTodoForm />
 
       {todos.length === 0 ? (
         <div className="flex flex-1 flex-col items-center justify-center rounded-lg border border-dashed shadow-sm p-4">
@@ -39,7 +42,7 @@ export default async function TodosPage() {
           </p>
         </div>
       ) : (
-        <TodoList todos={todos} />
+        <TodoBoard todos={todos} />
       )}
     </div>
   );

@@ -95,6 +95,23 @@
     "empty_title": "Henüz bir göreviniz yok",
     "empty_description": "Yeni bir yapılacak ekleyerek başlayın.",
     "new_todo_placeholder": "Yeni bir görev ekle...",
-    "add_button": "Ekle"
+    "add_button": "Ekle",
+    "new_todo_button": "Yeni Görev",
+    "new_todo_dialog_title": "Yeni Görev Oluştur",
+    "new_todo_dialog_desc": "Görevinizin detaylarını girin ve panonuza ekleyin.",
+    "title_label": "Başlık",
+    "description_label": "Açıklama",
+    "priority_label": "Öncelik",
+    "dueDate_label": "Bitiş Tarihi",
+    "priority_low": "Düşük",
+    "priority_medium": "Orta",
+    "priority_high": "Yüksek",
+    "priority_urgent": "Acil",
+    "pick_a_date": "Bir tarih seçin",
+    "save_button": "Görevi Kaydet",
+    "edit": "Düzenle",
+    "status_not_started": "Başlanmadı",
+    "status_in_progress": "Yapılıyor",
+    "status_done": "Tamamlandı"
   }
 }

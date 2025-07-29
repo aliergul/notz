@@ -1,14 +1,17 @@
 "use server";
 
 import { authOptions } from "@/lib/auth";
-import { TodoStatus } from "@prisma/client";
+import { PriorityLevel, TodoStatus } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
 import z from "zod";
 
 // Data Validation
-const createTodoSchema = z.object({
+const todoSchema = z.object({
   title: z.string().min(1, "title_required"),
+  description: z.string().optional(),
+  priority: z.enum(PriorityLevel).optional(),
+  dueDate: z.date().optional().nullable(),
 });
 
 // Todo - Create
@@ -16,16 +19,29 @@ export async function createTodo(formData: FormData) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return { error: "session_not_found" };
 
-  const validatedFields = createTodoSchema.safeParse({
+  const rawData = {
     title: formData.get("title"),
-  });
+    description: formData.get("description"),
+    priority: formData.get("priority"),
+    dueDate: formData.get("dueDate")
+      ? new Date(formData.get("dueDate") as string)
+      : null,
+  };
 
-  if (!validatedFields.success) return { error: "invalid_data_error" };
+  const validatedFields = todoSchema.safeParse(rawData);
+
+  if (!validatedFields.success) {
+    console.error(
+      "Validation errors:",
+      validatedFields.error.flatten().fieldErrors
+    );
+    return { error: "invalid_data_error" };
+  }
 
   try {
     await prisma?.todo.create({
       data: {
-        title: validatedFields.data.title,
+        ...validatedFields.data,
         userId: session.user.id,
       },
     });
