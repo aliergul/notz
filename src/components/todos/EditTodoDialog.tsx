@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import type { Todo } from "@prisma/client";
 import { useLocale, useTranslations } from "next-intl";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon, PlusCircle } from "lucide-react";
+import { tr } from "date-fns/locale";
+import { Calendar as CalendarIcon } from "lucide-react";
 import { PriorityLevel, TodoStatus } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -14,7 +16,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -32,19 +33,26 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
-import { createTodo } from "@/actions/todos";
+import { updateTodo } from "@/actions/todos";
 import ButtonSpinner from "../spinner";
-import { tr } from "date-fns/locale";
 
-export default function NewTodoDialog() {
-  const t = useTranslations("todos");
+interface EditTodoDialogProps {
+  todo: Todo;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+export default function EditTodoDialog({
+  todo,
+  open,
+  onOpenChange,
+}: EditTodoDialogProps) {
+  const t_todos = useTranslations("todos");
   const t_notify = useTranslations("notifications");
   const locale = useLocale();
-  const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [date, setDate] = useState<Date | undefined>();
-  const [openCalendar, setOpenCalendar] = useState<boolean>(false);
+  const [date, setDate] = useState<Date | undefined>(todo.dueDate || undefined);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -54,72 +62,76 @@ export default function NewTodoDialog() {
     const formData = new FormData(event.currentTarget);
     if (date) {
       formData.set("dueDate", date.toISOString());
+    } else {
+      formData.delete("dueDate");
     }
 
-    const result = await createTodo(formData);
+    const result = await updateTodo(todo.id, formData);
     setIsLoading(false);
 
-    if (result.error) {
+    if (result?.error) {
       setError(t_notify(result.error as string));
     } else {
-      setOpen(false);
-      setDate(undefined);
+      onOpenChange(false);
     }
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button size="sm" className="ml-auto gap-1 cursor-pointer">
-          <PlusCircle className="h-4 w-4" />
-          {t("new_todo_button")}
-        </Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{t("new_todo_dialog_title")}</DialogTitle>
-          <DialogDescription>{t("new_todo_dialog_desc")}</DialogDescription>
+          <DialogTitle>{t_todos("edit_todo_dialog_title")}</DialogTitle>
+          <DialogDescription>
+            {t_todos("edit_todo_dialog_desc")}
+          </DialogDescription>
         </DialogHeader>
         <form
           onSubmit={handleSubmit}
-          id="todo-form"
+          id="edit-todo-form"
           className="grid gap-4 py-4"
         >
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="title" className="text-right">
-              {t("title_label")}
+              {t_todos("title_label")}
             </Label>
-            <Input id="title" name="title" required className="col-span-3" />
+            <Input
+              id="title"
+              name="title"
+              defaultValue={todo.title}
+              required
+              className="col-span-3"
+            />
           </div>
 
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="description" className="text-right">
-              {t("description_label")}
+              {t_todos("description_label")}
             </Label>
             <Textarea
               id="description"
               name="description"
+              defaultValue={todo.description || ""}
               className="col-span-3"
             />
           </div>
 
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="status" className="text-right">
-              {t("status_label")}
+              {t_todos("status_label")}
             </Label>
-            <Select name="status" defaultValue={TodoStatus.NOT_STARTED}>
+            <Select name="status" defaultValue={todo.status}>
               <SelectTrigger className="col-span-3">
-                <SelectValue placeholder="Durum seçin" />
+                <SelectValue placeholder={t_todos("pick_a_status")} />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value={TodoStatus.NOT_STARTED}>
-                  {t("status_not_started")}
+                  {t_todos("status_not_started")}
                 </SelectItem>
                 <SelectItem value={TodoStatus.IN_PROGRESS}>
-                  {t("status_in_progress")}
+                  {t_todos("status_in_progress")}
                 </SelectItem>
                 <SelectItem value={TodoStatus.DONE}>
-                  {t("status_done")}
+                  {t_todos("status_done")}
                 </SelectItem>
               </SelectContent>
             </Select>
@@ -127,24 +139,24 @@ export default function NewTodoDialog() {
 
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="priority" className="text-right">
-              {t("priority_label")}
+              {t_todos("priority_label")}
             </Label>
-            <Select name="priority" defaultValue={PriorityLevel.MEDIUM}>
+            <Select name="priority" defaultValue={todo.priority}>
               <SelectTrigger className="col-span-3">
                 <SelectValue placeholder="Öncelik seçin" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value={PriorityLevel.LOW}>
-                  {t("priority_low")}
+                  {t_todos("priority_low")}
                 </SelectItem>
                 <SelectItem value={PriorityLevel.MEDIUM}>
-                  {t("priority_medium")}
+                  {t_todos("priority_medium")}
                 </SelectItem>
                 <SelectItem value={PriorityLevel.HIGH}>
-                  {t("priority_high")}
+                  {t_todos("priority_high")}
                 </SelectItem>
                 <SelectItem value={PriorityLevel.URGENT}>
-                  {t("priority_urgent")}
+                  {t_todos("priority_urgent")}
                 </SelectItem>
               </SelectContent>
             </Select>
@@ -152,14 +164,14 @@ export default function NewTodoDialog() {
 
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="dueDate" className="text-right">
-              {t("dueDate_label")}
+              {t_todos("dueDate_label")}
             </Label>
-            <Popover open={openCalendar} onOpenChange={setOpenCalendar}>
+            <Popover>
               <PopoverTrigger asChild>
                 <Button
                   variant={"outline"}
                   className={cn(
-                    "col-span-3 justify-start text-left font-normal cursor-pointer",
+                    "col-span-3 justify-start text-left font-normal",
                     !date && "text-muted-foreground"
                   )}
                 >
@@ -169,7 +181,7 @@ export default function NewTodoDialog() {
                       locale: locale === "tr" ? tr : undefined,
                     })
                   ) : (
-                    <span>{t("pick_a_date")}</span>
+                    <span>{t_todos("pick_a_date")}</span>
                   )}
                 </Button>
               </PopoverTrigger>
@@ -177,12 +189,9 @@ export default function NewTodoDialog() {
                 <Calendar
                   mode="single"
                   selected={date}
+                  onSelect={setDate}
                   autoFocus
                   locale={locale === "tr" ? tr : undefined}
-                  onSelect={(value) => {
-                    setOpenCalendar(false);
-                    setDate(value);
-                  }}
                 />
               </PopoverContent>
             </Popover>
@@ -196,12 +205,12 @@ export default function NewTodoDialog() {
         <DialogFooter>
           <Button
             type="submit"
-            form="todo-form"
+            form="edit-todo-form"
             disabled={isLoading}
             className="w-full cursor-pointer"
           >
             {isLoading && <ButtonSpinner />}
-            {t("save_button")}
+            {t_todos("save_changes_button")}
           </Button>
         </DialogFooter>
       </DialogContent>

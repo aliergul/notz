@@ -41,10 +41,12 @@
     "permanent_delete_item_success": "Öğe başarıyla kalıcı olarak silindi.",
     "create_todo_unexpected_err": "Yapılacak ögesi oluşturulurken beklenmedik bir hata ile karşılaşıldı.",
     "create_todo_success": "Yapılacak ögesi başarıyla oluşturuldu.",
-    "update_todo_unexpected_err": "Yapılacak ögesinin durumunu değiştirirken beklenmedik bir hata ile karşılaşıldı.",
-    "update_todo_success": "Yapılacak ögesinin durumu başarıyla değiştirildi.",
+    "update_todo_unexpected_err": "Görev güncellenirken bir hata oluştu.",
+    "update_todo_success": "Görev başarıyla güncellendi.",
     "soft_delete_todo_unexpected_err": "Yapılacak ögesi çöp kutusuna taşınırken beklenmedik bir hata ile karşılaşıldı.",
-    "soft_delete_todo_success": "Yapılacak ögesi başarı ile çöp kutusuna taşındı."
+    "soft_delete_todo_success": "Yapılacak ögesi başarı ile çöp kutusuna taşındı.",
+    "permanent_delete_todo_unexpected_err": "Görev kalıcı olarak silinirken beklenmedik bir hata ile karşılaşıldı.",
+    "permanent_delete_todo_success": "Görev başarılı bir şekilde kalıcı olarak silindi."
   },
   "sidebar_navbar": {
     "home_page": "Ana Sayfa",
@@ -110,8 +112,18 @@
     "pick_a_date": "Bir tarih seçin",
     "save_button": "Görevi Kaydet",
     "edit": "Düzenle",
+    "edit_todo_dialog_title": "Görevi Düzenle",
+    "edit_todo_dialog_desc": "Görevinizde değişiklik yapın ve kaydedin.",
+    "save_changes_button": "Değişiklikleri Kaydet",
+    "delete": "Sil",
+    "cancel": "İptal",
+    "delete_todo_confirmation_title": "Görevi Sil?",
+    "delete_todo_confirmation_desc": "Bu görev çöp kutusuna taşınacak. Daha sonra isterseniz geri yükleyebilirsiniz.",
     "status_not_started": "Başlanmadı",
-    "status_in_progress": "Yapılıyor",
-    "status_done": "Tamamlandı"
+    "status_in_progress": "Devam Ediyor",
+    "status_done": "Tamamlandı",
+    "permanent_delete_checkbox": "Bu görevi kalıcı olarak sil",
+    "pick_a_status": "Durum Seçin",
+    "status_label": "Durum"
   }
 }

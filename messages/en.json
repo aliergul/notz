@@ -26,7 +26,7 @@
     "registration_failed": "An error occurred during registration. Please try again.",
     "registration_success": "Account created successfully! Redirecting to the login page...",
     "session_not_found": "An error was encountered while retrieving session information. Please try again later.",
-    "not_found_or_unauthorized": "Note not found or you are not authorized for this action.",
+    "not_found_or_unauthorized": "Item not found or you are not authorized for this action.",
     "invalid_data_error": "Invalid data entry.",
     "create_note_unexpected_err": "An unexpected error occurred while creating the note.",
     "update_note_unexpected_err": "An unexpected error occurred while editing the note.",
@@ -41,10 +41,12 @@
     "permanent_delete_item_success": "Item successfully deleted permanently.",
     "create_todo_unexpected_err": "An unexpected error occurred while creating the to-do item.",
     "create_todo_success": "To-do item created successfully.",
-    "update_todo_unexpected_err": "An unexpected error occurred while changing the status of the to-do item.",
-    "update_todo_success": "The status of the to-do item has been successfully changed.",
+    "update_todo_unexpected_err": "An unexpected error occurred while updating the task.",
+    "update_todo_success": "Task updated successfully.",
     "soft_delete_todo_unexpected_err": "An unexpected error occurred while moving the to-do item to the trash.",
-    "soft_delete_todo_success": "To-do item successfully moved to the trash."
+    "soft_delete_todo_success": "To-do item successfully moved to the trash.",
+    "permanent_delete_todo_unexpected_err": "An unexpected error occurred while permanently deleting the task.",
+    "permanent_delete_todo_success": "Task successfully deleted permanently."
   },
   "sidebar_navbar": {
     "home_page": "Home Page",
@@ -110,8 +112,18 @@
     "pick_a_date": "Pick a date",
     "save_button": "Save Task",
     "edit": "Edit",
-    "status_not_started": "status_not_started",
-    "status_in_progress": "status_in_progress",
-    "status_done": "status_done"
+    "edit_todo_dialog_title": "Edit Task",
+    "edit_todo_dialog_desc": "Make changes to your task and save.",
+    "save_changes_button": "Save Changes",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "delete_todo_confirmation_title": "Delete Task?",
+    "delete_todo_confirmation_desc": "This task will be moved to the trash. You can restore it later if you wish.",
+    "status_not_started": "Not Started",
+    "status_in_progress": "In Progress",
+    "status_done": "Done",
+    "permanent_delete_checkbox": "Permanently delete this task",
+    "pick_a_status": "Select Status",
+    "status_label": "Status"
   }
 }
