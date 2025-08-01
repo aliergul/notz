@@ -133,5 +133,22 @@
     "permanent_delete_checkbox": "Permanently delete this task",
     "pick_a_status": "Select Status",
     "status_label": "Status"
+  },
+  "tags": {
+    "title": "Tags",
+    "empty_page": "You don't have any tags yet. Start by clicking the 'New Tag' button!",
+    "new_tag_button": "New Tag",
+    "new_tag_dialog_title": "Create New Tag",
+    "new_tag_dialog_desc": "Organize your notes and tasks by entering the details of your tag.",
+    "name_label": "Tag Name",
+    "description_label": "Description",
+    "color_label": "Color",
+    "save_button": "Save Tag",
+    "edit": "Edit",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "delete_tag_confirmation_title": "Delete Tag?",
+    "delete_tag_confirmation_desc": "This tag will be moved to the trash. It will be removed from any notes and tasks that have it.",
+    "permanent_delete_checkbox": "Permanently delete this tag"
   }
 }

@@ -133,5 +133,22 @@
     "permanent_delete_checkbox": "Bu görevi kalıcı olarak sil",
     "pick_a_status": "Durum Seçin",
     "status_label": "Durum"
+  },
+  "tags": {
+    "title": "Etiketler",
+    "empty_page": "Henüz hiç etiketiniz yok. 'Yeni Etiket' butonuna tıklayarak başlayın!",
+    "new_tag_button": "Yeni Etiket",
+    "new_tag_dialog_title": "Yeni Etiket Oluştur",
+    "new_tag_dialog_desc": "Etiketinizin detaylarını girerek notlarınızı ve görevlerinizi organize edin.",
+    "name_label": "Etiket Adı",
+    "description_label": "Açıklama",
+    "color_label": "Renk",
+    "save_button": "Etiketi Kaydet",
+    "edit": "Düzenle",
+    "delete": "Sil",
+    "cancel": "İptal",
+    "delete_tag_confirmation_title": "Etiketi Sil?",
+    "delete_tag_confirmation_desc": "Bu etiket çöp kutusuna taşınacak. Bu etikete sahip not ve görevlerden kaldırılacaktır.",
+    "permanent_delete_checkbox": "Bu etiketi kalıcı olarak sil"
   }
 }
