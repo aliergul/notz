@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import NewTagDialog from "@/components/tags/NewTagDialog";
+import TagCard from "@/components/tags/TagCard";
 
 export default async function TagsPage() {
   const t = await getTranslations("tags");
@@ -39,21 +40,7 @@ export default async function TagsPage() {
         ) : (
           <div className="grid gap-4">
             {tags.map((tag) => (
-              <div
-                key={tag.id}
-                className="flex items-center justify-between rounded-lg border bg-card p-4"
-              >
-                <div className="flex items-center gap-3">
-                  <div
-                    className="h-4 w-4 rounded-full"
-                    style={{ backgroundColor: tag.color || "#888888" }}
-                  />
-                  <span className="font-semibold">{tag.name}</span>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  {tag.description}
-                </p>
-              </div>
+              <TagCard key={tag.id} tag={tag} />
             ))}
           </div>
         )}
