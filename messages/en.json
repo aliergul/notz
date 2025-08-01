@@ -46,7 +46,15 @@
     "soft_delete_todo_unexpected_err": "An unexpected error occurred while moving the to-do item to the trash.",
     "soft_delete_todo_success": "To-do item successfully moved to the trash.",
     "permanent_delete_todo_unexpected_err": "An unexpected error occurred while permanently deleting the task.",
-    "permanent_delete_todo_success": "Task successfully deleted permanently."
+    "permanent_delete_todo_success": "Task successfully deleted permanently.",
+    "create_tag_unexpected_err": "An unexpected error occurred while creating the tag.",
+    "create_tag_success": "Tag created successfully.",
+    "update_tag_unexpected_err": "An unexpected error occurred while updating the tag.",
+    "update_tag_success": "Tag updated successfully.",
+    "soft_delete_tag_unexpected_err": "An unexpected error occurred while moving the tag to the trash.",
+    "soft_delete_tag_success": "Tag successfully moved to the trash.",
+    "permanent_delete_tag_unexpected_err": "An unexpected error occurred while permanently deleting the tag.",
+    "permanent_delete_tag_success": "Tag successfully deleted permanently."
   },
   "sidebar_navbar": {
     "home_page": "Home Page",

@@ -46,7 +46,15 @@
     "soft_delete_todo_unexpected_err": "Yapılacak ögesi çöp kutusuna taşınırken beklenmedik bir hata ile karşılaşıldı.",
     "soft_delete_todo_success": "Yapılacak ögesi başarı ile çöp kutusuna taşındı.",
     "permanent_delete_todo_unexpected_err": "Görev kalıcı olarak silinirken beklenmedik bir hata ile karşılaşıldı.",
-    "permanent_delete_todo_success": "Görev başarılı bir şekilde kalıcı olarak silindi."
+    "permanent_delete_todo_success": "Görev başarılı bir şekilde kalıcı olarak silindi.",
+    "create_tag_unexpected_err": "Etiket oluşturulurken beklenmedik bir hata ile karşılaşıldı.",
+    "create_tag_success": "Etiket başarıyla oluşturuldu.",
+    "update_tag_unexpected_err": "Etiket güncellenirken beklenmedik bir hata ile karşılaşıldı.",
+    "update_tag_success": "Etiket başarıyla güncellendi.",
+    "soft_delete_tag_unexpected_err": "Etiket çöp kutusuna taşınırken beklenmedik bir hata ile karşılaşıldı.",
+    "soft_delete_tag_success": "Etiket başarıyla çöp kutusuna taşındı.",
+    "permanent_delete_tag_unexpected_err": "Etiket kalıcı olarak silinirken beklenmedik bir hata ile karşılaşıldı.",
+    "permanent_delete_tag_success": "Etiket başarılı bir şekilde kalıcı olarak silindi."
   },
   "sidebar_navbar": {
     "home_page": "Ana Sayfa",
