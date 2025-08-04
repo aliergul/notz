@@ -55,13 +55,13 @@ export default function TagSelector({
         <input key={tag.id} type="hidden" name="tagIds" value={tag.id} />
       ))}
 
-      <Popover open={open} onOpenChange={setOpen}>
+      <Popover open={open} onOpenChange={setOpen} modal={true}>
         <PopoverTrigger asChild>
           <Button
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="w-full justify-between"
+            className="w-full justify-between cursor-pointer"
           >
             <span className="truncate">
               {selectedTags.length > 0
@@ -92,7 +92,13 @@ export default function TagSelector({
                           : "opacity-0"
                       )}
                     />
-                    {tag.name}
+                    <div className="flex items-center gap-2">
+                      <div
+                        className="h-2 w-2 rounded-full"
+                        style={{ backgroundColor: tag.color || "#888888" }}
+                      />
+                      <span>{tag.name}</span>
+                    </div>
                   </CommandItem>
                 ))}
               </CommandGroup>
@@ -105,14 +111,18 @@ export default function TagSelector({
         {selectedTags.map((tag) => (
           <Badge
             key={tag.id}
-            variant="secondary"
+            variant="outline"
+            style={{
+              borderColor: tag.color || undefined,
+              color: tag.color || undefined,
+            }}
             className="flex items-center gap-1"
           >
             {tag.name}
             <button
               type="button"
               onClick={() => handleRemove(tag.id)}
-              className="rounded-full hover:bg-muted-foreground/20"
+              className="rounded-full hover:bg-muted-foreground/20 cursor-pointer"
             >
               <X className="h-3 w-3" />
             </button>

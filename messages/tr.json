@@ -85,7 +85,9 @@
     "save_changes": "Değişiklikleri Kaydet",
     "permanent_delete_checkbox": "Bu notu kalıcı olarak sil",
     "unnamed_note": "Başlıksız Not",
-    "edit_note_success": "Not başarıyla güncellendi."
+    "edit_note_success": "Not başarıyla güncellendi.",
+    "tags_label": "Etiketler",
+    "no_tags_placeholder": "Etiket yok"
   },
   "trash": {
     "title": "Çöp Kutusu",
@@ -153,7 +155,7 @@
     "delete_tag_confirmation_title": "Etiketi Sil?",
     "delete_tag_confirmation_desc": "Bu etiket çöp kutusuna taşınacak. Bu etikete sahip not ve görevlerden kaldırılacaktır.",
     "permanent_delete_checkbox": "Bu etiketi kalıcı olarak sil",
-    "selected_tag_action": "etiket seçildi",
+    "selected_tags_action": "etiket seçildi",
     "select_tag_action": "Etiket seçin...",
     "tag_not_found": "Etiket bulunamadı.",
     "tag_search": "Etiket ara..."

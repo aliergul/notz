@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import type { Note } from "@prisma/client";
+import type { Note, Tag } from "@prisma/client";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -35,12 +36,17 @@ import { softDeleteNote, deleteNotePermanently } from "@/actions/notes";
 import ButtonSpinner from "../spinner";
 import EditNoteDialog from "./EditNoteDialog";
 import clsx from "clsx";
+import { Badge } from "../ui/badge";
+import TruncateWithTooltip from "@/components/truncate-with-tooltip";
+
+type NoteWithTags = Note & { tags: Tag[] };
 
 interface NoteCardProps {
-  note: Note;
+  note: NoteWithTags;
+  allTags: Tag[];
 }
 
-export default function NoteCard({ note }: NoteCardProps) {
+export default function NoteCard({ note, allTags }: NoteCardProps) {
   const t = useTranslations("notes");
   const format = useFormatter();
   const [isDeleting, setIsDeleting] = useState(false);
@@ -59,12 +65,17 @@ export default function NoteCard({ note }: NoteCardProps) {
 
   return (
     <>
-      <Card>
+      <Card className="flex h-64 flex-col">
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="truncate">
-              {note.title || t("unnamed_note")}
-            </CardTitle>
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex-1 min-w-0">
+              <CardTitle className="truncate">
+                <TruncateWithTooltip
+                  text={note.title || t("unnamed_note")}
+                  maxLength={50}
+                />
+              </CardTitle>
+            </div>
             <AlertDialog>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -137,24 +148,49 @@ export default function NoteCard({ note }: NoteCardProps) {
               </AlertDialogContent>
             </AlertDialog>
           </div>
-          <CardDescription>
+        </CardHeader>
+
+        <CardContent className="flex-1 overflow-hidden">
+          <p className="text-sm text-muted-foreground text-left">
+            <TruncateWithTooltip text={note.content} maxLength={220} />
+          </p>
+        </CardContent>
+
+        <CardFooter className="flex flex-col items-start gap-2 pt-2">
+          <CardDescription className="text-xs">
             {t("last_update")}:{" "}
             {format.dateTime(new Date(note.updatedAt), {
               year: "numeric",
-              month: "long",
+              month: "short",
               day: "numeric",
             })}
           </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground line-clamp-4">
-            {note.content}
-          </p>
-        </CardContent>
+          <div className="flex flex-wrap gap-1">
+            {note.tags.length > 0 ? (
+              note.tags.map((tag) => (
+                <Badge
+                  key={tag.id}
+                  variant="outline"
+                  style={{
+                    borderColor: tag.color || undefined,
+                    color: tag.color || undefined,
+                  }}
+                >
+                  {tag.name}
+                </Badge>
+              ))
+            ) : (
+              <p className="text-xs text-muted-foreground italic">
+                {t("no_tags_placeholder")}
+              </p>
+            )}
+          </div>
+        </CardFooter>
       </Card>
 
       <EditNoteDialog
         note={note}
+        allTags={allTags}
         open={isEditOpen}
         onOpenChange={setIsEditOpen}
       />

@@ -1,26 +1,33 @@
 "use client";
 
 import { useState } from "react";
+import type { Tag } from "@prisma/client"; // YENİ: Tag tipini import ediyoruz
+import { useTranslations } from "next-intl";
 import { PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { createNote } from "@/actions/notes";
 import ButtonSpinner from "../spinner";
-import { useTranslations } from "next-intl";
+import TagSelector from "../tags/TagSelector";
 
-export default function NewNoteDialog() {
-  const t = useTranslations("notes");
+interface NewNoteDialogProps {
+  allTags: Tag[];
+}
+
+export default function NewNoteDialog({ allTags }: NewNoteDialogProps) {
+  const t_notes = useTranslations("notes");
+  const t_notify = useTranslations("notifications");
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -36,7 +43,7 @@ export default function NewNoteDialog() {
     setIsLoading(false);
 
     if (result.error) {
-      setError(result.error);
+      setError(t_notify(result.error as string));
     } else {
       setOpen(false);
     }
@@ -47,13 +54,15 @@ export default function NewNoteDialog() {
       <DialogTrigger asChild>
         <Button size="sm" className="ml-auto gap-1 cursor-pointer">
           <PlusCircle className="h-4 w-4" />
-          {t("create_note_button")}
+          {t_notes("create_note_button")}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{t("create_note_dialog_title")}</DialogTitle>
-          <DialogDescription>{t("create_note_dialog_desc")}</DialogDescription>
+          <DialogTitle>{t_notes("create_note_dialog_title")}</DialogTitle>
+          <DialogDescription>
+            {t_notes("create_note_dialog_desc")}
+          </DialogDescription>
         </DialogHeader>
         <form
           onSubmit={handleSubmit}
@@ -62,13 +71,13 @@ export default function NewNoteDialog() {
         >
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="title" className="text-right">
-              {t("note_title")}
+              {t_notes("note_title")}
             </Label>
             <Input id="title" name="title" className="col-span-3" />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="content" className="text-right">
-              {t("note_content")}
+              {t_notes("note_content")}
             </Label>
             <Textarea
               id="content"
@@ -76,6 +85,12 @@ export default function NewNoteDialog() {
               required
               className="col-span-3"
             />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label className="text-right">{t_notes("tags_label")}</Label>
+            <div className="col-span-3">
+              <TagSelector allTags={allTags} />
+            </div>
           </div>
           {error && (
             <p className="col-span-4 text-center text-sm font-medium text-red-500">
@@ -91,7 +106,7 @@ export default function NewNoteDialog() {
             className="w-full cursor-pointer"
           >
             {isLoading && <ButtonSpinner />}
-            {t("note_save")}
+            {t_notes("note_save")}
           </Button>
         </DialogFooter>
       </DialogContent>

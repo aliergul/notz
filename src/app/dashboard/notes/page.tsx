@@ -1,9 +1,9 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import NewNoteDialog from "@/components/notes/NewNoteDialog";
-import { getTranslations } from "next-intl/server";
 import NoteCard from "@/components/notes/NoteCard";
 
 export default async function NotesPage() {
@@ -13,22 +13,36 @@ export default async function NotesPage() {
     redirect("/");
   }
 
-  const notes = await prisma.note.findMany({
-    where: {
-      userId: session.user.id,
-      softDelete: false,
-    },
-    orderBy: {
-      updatedAt: "desc",
-    },
-  });
+  const [notes, allTags] = await Promise.all([
+    prisma.note.findMany({
+      where: {
+        userId: session.user.id,
+        softDelete: false,
+      },
+      include: {
+        tags: true,
+      },
+      orderBy: {
+        updatedAt: "desc",
+      },
+    }),
+    prisma.tag.findMany({
+      where: {
+        userId: session.user.id,
+        softDelete: false,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    }),
+  ]);
 
   return (
     <>
       <div className="flex items-center">
         <h1 className="text-lg font-semibold md:text-2xl">{t("my_notes")}</h1>
         <div className="ml-auto">
-          <NewNoteDialog />
+          <NewNoteDialog allTags={allTags} />
         </div>
       </div>
 
@@ -40,7 +54,7 @@ export default async function NotesPage() {
         ) : (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {notes.map((note) => (
-              <NoteCard key={note.id} note={note} />
+              <NoteCard key={note.id} note={note} allTags={allTags} />
             ))}
           </div>
         )}
