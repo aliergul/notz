@@ -152,6 +152,10 @@
     "cancel": "Cancel",
     "delete_tag_confirmation_title": "Delete Tag?",
     "delete_tag_confirmation_desc": "This tag will be moved to the trash. It will be removed from any notes and tasks that have it.",
-    "permanent_delete_checkbox": "Permanently delete this tag"
+    "permanent_delete_checkbox": "Permanently delete this tag",
+    "selected_tag_action": "tags selected",
+    "select_tag_action": "Select a tag...",
+    "tag_not_found": "No tag found.",
+    "tag_search": "Search tags..."
   }
 }
