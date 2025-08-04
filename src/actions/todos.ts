@@ -13,6 +13,7 @@ const todoSchema = z.object({
   priority: z.enum(PriorityLevel).optional(),
   dueDate: z.date().optional().nullable(),
   status: z.enum(TodoStatus).optional(),
+  tagIds: z.array(z.string()).optional(),
 });
 
 // Todo - Create
@@ -28,23 +29,30 @@ export async function createTodo(formData: FormData) {
     dueDate: formData.get("dueDate")
       ? new Date(formData.get("dueDate") as string)
       : null,
+    tagIds: formData.getAll("tagIds"),
   };
 
   const validatedFields = todoSchema.safeParse(rawData);
 
   if (!validatedFields.success) {
-    console.error(
-      "Validation errors:",
-      validatedFields.error.flatten().fieldErrors
-    );
     return { error: "invalid_data_error" };
   }
+
+  const { title, description, priority, status, dueDate, tagIds } =
+    validatedFields.data;
 
   try {
     await prisma?.todo.create({
       data: {
-        ...validatedFields.data,
+        title,
+        description,
+        priority,
+        status,
+        dueDate,
         userId: session.user.id,
+        tags: {
+          connect: tagIds?.map((id) => ({ id })),
+        },
       },
     });
   } catch (error) {
@@ -69,6 +77,7 @@ export async function updateTodo(todoId: string, formData: FormData) {
     dueDate: formData.get("dueDate")
       ? new Date(formData.get("dueDate") as string)
       : null,
+    tagIds: formData.getAll("tagIds"),
   };
 
   const validatedFields = todoSchema.safeParse(rawData);
@@ -76,6 +85,9 @@ export async function updateTodo(todoId: string, formData: FormData) {
   if (!validatedFields.success) {
     return { error: "invalid_data_error" };
   }
+
+  const { title, description, priority, status, dueDate, tagIds } =
+    validatedFields.data;
 
   try {
     const todo = await prisma?.todo.findUnique({ where: { id: todoId } });
@@ -85,7 +97,16 @@ export async function updateTodo(todoId: string, formData: FormData) {
 
     await prisma?.todo.update({
       where: { id: todoId },
-      data: validatedFields.data,
+      data: {
+        title,
+        description,
+        priority,
+        status,
+        dueDate,
+        tags: {
+          set: tagIds?.map((id) => ({ id })),
+        },
+      },
     });
   } catch (error) {
     console.error("Unexpected error during update todo:", error);

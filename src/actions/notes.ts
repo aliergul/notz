@@ -9,6 +9,7 @@ import { z } from "zod";
 const noteSchema = z.object({
   title: z.string().optional(),
   content: z.string().min(1, "İçerik boş olamaz."),
+  tagIds: z.array(z.string()).optional(),
 });
 
 // Note - Create
@@ -22,6 +23,7 @@ export async function createNote(formData: FormData) {
   const validatedFields = noteSchema.safeParse({
     title: formData.get("title"),
     content: formData.get("content"),
+    tagIds: formData.getAll("tagIds"),
   });
 
   if (!validatedFields.success) {
@@ -30,7 +32,7 @@ export async function createNote(formData: FormData) {
     };
   }
 
-  const { title, content } = validatedFields.data;
+  const { title, content, tagIds } = validatedFields.data;
 
   try {
     await prisma?.note.create({
@@ -38,6 +40,9 @@ export async function createNote(formData: FormData) {
         title,
         content,
         userId: session.user.id,
+        tags: {
+          connect: tagIds?.map((id) => ({ id })),
+        },
       },
     });
   } catch (error) {
@@ -60,6 +65,7 @@ export async function updateNote(noteId: string, formData: FormData) {
   const validatedFields = noteSchema.safeParse({
     title: formData.get("title"),
     content: formData.get("content"),
+    tagIds: formData.getAll("tagIds"),
   });
 
   if (!validatedFields.success) {
@@ -67,6 +73,8 @@ export async function updateNote(noteId: string, formData: FormData) {
       error: "invalid_data_error",
     };
   }
+
+  const { title, content, tagIds } = validatedFields.data;
 
   try {
     const note = await prisma?.note.findUnique({
@@ -80,8 +88,11 @@ export async function updateNote(noteId: string, formData: FormData) {
     await prisma?.note.update({
       where: { id: noteId },
       data: {
-        title: validatedFields.data.title,
-        content: validatedFields.data.content,
+        title,
+        content,
+        tags: {
+          set: tagIds?.map((id) => ({ id })),
+        },
       },
     });
   } catch (error) {
