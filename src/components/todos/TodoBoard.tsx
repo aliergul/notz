@@ -1,14 +1,17 @@
 "use client";
 
-import type { Todo } from "@prisma/client";
+import type { Tag, Todo } from "@prisma/client";
 import { useTranslations } from "next-intl";
 import TodoCard from "./TodoCard";
 
+type TodoWithTags = Todo & { tags: Tag[] };
+
 interface TodoBoardProps {
-  todos: Todo[];
+  todos: TodoWithTags[];
+  allTags: Tag[];
 }
 
-export default function TodoBoard({ todos }: TodoBoardProps) {
+export default function TodoBoard({ todos, allTags }: TodoBoardProps) {
   const t = useTranslations("todos");
 
   const notStarted = todos.filter((todo) => todo.status === "NOT_STARTED");
@@ -30,7 +33,7 @@ export default function TodoBoard({ todos }: TodoBoardProps) {
           </h2>
           <div className="flex flex-col gap-4 rounded-lg border p-2 min-h-[200px]">
             {column.tasks.map((todo) => (
-              <TodoCard key={todo.id} todo={todo} />
+              <TodoCard key={todo.id} todo={todo} allTags={allTags} />
             ))}
           </div>
         </div>

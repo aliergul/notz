@@ -76,6 +76,8 @@ export async function updateTag(tagId: string, formData: FormData) {
   }
 
   revalidatePath("/dashboard/tags");
+  revalidatePath("/dashboard/notes");
+  revalidatePath("/dashboard/todos");
   return { success: "update_tag_success" };
 }
 
@@ -104,6 +106,8 @@ export async function softDeleteTag(tagId: string) {
   }
 
   revalidatePath("/dashboard/tags");
+  revalidatePath("/dashboard/notes");
+  revalidatePath("/dashboard/todos");
   revalidatePath("/dashboard/trash");
   return { success: "soft_delete_tag_success" };
 }
@@ -130,6 +134,8 @@ export async function deleteTagPermanent(tagId: string) {
   }
 
   revalidatePath("/dashboard/tags");
+  revalidatePath("/dashboard/notes");
+  revalidatePath("/dashboard/todos");
   revalidatePath("/dashboard/trash");
   return { success: "permanent_delete_tag_success" };
 }

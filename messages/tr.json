@@ -134,7 +134,8 @@
     "status_done": "Tamamlandı",
     "permanent_delete_checkbox": "Bu görevi kalıcı olarak sil",
     "pick_a_status": "Durum Seçin",
-    "status_label": "Durum"
+    "status_label": "Durum",
+    "tags_label": "Etiketler"
   },
   "tags": {
     "title": "Etiketler",

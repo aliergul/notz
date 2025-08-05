@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon, PlusCircle } from "lucide-react";
-import { PriorityLevel, TodoStatus } from "@prisma/client";
+import { PriorityLevel, Tag, TodoStatus } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -35,8 +35,13 @@ import { cn } from "@/lib/utils";
 import { createTodo } from "@/actions/todos";
 import ButtonSpinner from "../spinner";
 import { tr } from "date-fns/locale";
+import TagSelector from "../tags/TagSelector";
 
-export default function NewTodoDialog() {
+interface NewTodoDialogProps {
+  allTags: Tag[];
+}
+
+export default function NewTodoDialog({ allTags }: NewTodoDialogProps) {
   const t = useTranslations("todos");
   const t_notify = useTranslations("notifications");
   const locale = useLocale();
@@ -187,6 +192,14 @@ export default function NewTodoDialog() {
               </PopoverContent>
             </Popover>
           </div>
+
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label className="text-right">{t("tags_label")}</Label>
+            <div className="col-span-3">
+              <TagSelector allTags={allTags} />
+            </div>
+          </div>
+
           {error && (
             <p className="col-span-4 text-center text-sm font-medium text-red-500">
               {error}

@@ -1,10 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import type { Todo } from "@prisma/client";
+import type { Tag, Todo } from "@prisma/client";
 import { useFormatter, useTranslations } from "next-intl";
 import { MoreHorizontal, Flag, Calendar, Pencil, Trash2 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -29,9 +35,13 @@ import ButtonSpinner from "@/components/spinner";
 import clsx from "clsx";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { Badge } from "../ui/badge";
+
+type TodoWithTags = Todo & { tags: Tag[] };
 
 interface TodoCardProps {
-  todo: Todo;
+  todo: TodoWithTags;
+  allTags: Tag[];
 }
 
 const priorityColors = {
@@ -41,7 +51,7 @@ const priorityColors = {
   URGENT: "text-red-500",
 };
 
-export default function TodoCard({ todo }: TodoCardProps) {
+export default function TodoCard({ todo, allTags }: TodoCardProps) {
   const format = useFormatter();
   const t = useTranslations("todos");
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -165,12 +175,29 @@ export default function TodoCard({ todo }: TodoCardProps) {
             </div>
           </div>
         </CardContent>
+        {todo.tags.length > 0 && (
+          <CardFooter className="flex flex-wrap gap-1 p-4 pt-0">
+            {todo.tags.map((tag) => (
+              <Badge
+                key={tag.id}
+                variant="outline"
+                style={{
+                  borderColor: tag.color || undefined,
+                  color: tag.color || undefined,
+                }}
+              >
+                {tag.name}
+              </Badge>
+            ))}
+          </CardFooter>
+        )}
       </Card>
 
       <EditTodoDialog
         todo={todo}
         open={isEditOpen}
         onOpenChange={setIsEditOpen}
+        allTags={allTags}
       />
     </>
   );

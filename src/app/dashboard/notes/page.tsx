@@ -19,9 +19,7 @@ export default async function NotesPage() {
         userId: session.user.id,
         softDelete: false,
       },
-      include: {
-        tags: true,
-      },
+      include: { tags: { where: { softDelete: false } } },
       orderBy: {
         updatedAt: "desc",
       },

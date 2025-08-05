@@ -13,22 +13,24 @@ export default async function TodosPage() {
     redirect("/");
   }
 
-  const todos = await prisma.todo.findMany({
-    where: {
-      userId: session.user.id,
-      softDelete: false,
-    },
-    orderBy: {
-      createdAt: "asc",
-    },
-  });
+  const [todos, allTags] = await Promise.all([
+    prisma.todo.findMany({
+      where: { userId: session.user.id, softDelete: false },
+      include: { tags: { where: { softDelete: false } } },
+      orderBy: { updatedAt: "desc" },
+    }),
+    prisma.tag.findMany({
+      where: { userId: session.user.id, softDelete: false },
+      orderBy: { createdAt: "desc" },
+    }),
+  ]);
 
   return (
     <div className="flex flex-col gap-4 h-full">
       <div className="flex items-center">
         <h1 className="text-lg font-semibold md:text-2xl">{t("title")}</h1>
         <div className="ml-auto">
-          <NewTodoDialog />
+          <NewTodoDialog allTags={allTags} />
         </div>
       </div>
 
@@ -42,7 +44,7 @@ export default async function TodosPage() {
           </p>
         </div>
       ) : (
-        <TodoBoard todos={todos} />
+        <TodoBoard todos={todos} allTags={allTags} />
       )}
     </div>
   );

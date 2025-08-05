@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { Todo } from "@prisma/client";
+import type { Tag, Todo } from "@prisma/client";
 import { useLocale, useTranslations } from "next-intl";
 import { format } from "date-fns";
 import { tr } from "date-fns/locale";
@@ -35,15 +35,20 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { updateTodo } from "@/actions/todos";
 import ButtonSpinner from "../spinner";
+import TagSelector from "../tags/TagSelector";
+
+type TodoWithTags = Todo & { tags: Tag[] };
 
 interface EditTodoDialogProps {
-  todo: Todo;
+  todo: TodoWithTags;
+  allTags: Tag[];
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
 export default function EditTodoDialog({
   todo,
+  allTags,
   open,
   onOpenChange,
 }: EditTodoDialogProps) {
@@ -196,6 +201,17 @@ export default function EditTodoDialog({
               </PopoverContent>
             </Popover>
           </div>
+
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label className="text-right">{t_todos("tags_label")}</Label>
+            <div className="col-span-3">
+              <TagSelector
+                allTags={allTags}
+                initialSelectedTagIds={todo.tags.map((tag) => tag.id)}
+              />
+            </div>
+          </div>
+
           {error && (
             <p className="col-span-4 text-center text-sm font-medium text-red-500">
               {error}
