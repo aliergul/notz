@@ -75,7 +75,7 @@ export default function NoteFilters({ allTags }: NoteFiltersProps) {
         defaultValue={searchParams.get("tag") || "all_tags"}
         disabled={isPending}
       >
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className="w-[180px] cursor-pointer">
           <SelectValue placeholder={t("filter_by_tag")} />
         </SelectTrigger>
         <SelectContent>

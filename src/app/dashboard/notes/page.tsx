@@ -7,19 +7,18 @@ import NewNoteDialog from "@/components/notes/NewNoteDialog";
 import NoteCard from "@/components/notes/NoteCard";
 import NoteFilters from "@/components/notes/NoteFilters";
 
+export const dynamic = "force-dynamic";
+
 interface NotesPageProps {
   searchParams: {
     q?: string;
     tag?: string;
   };
 }
-
 export default async function NotesPage({ searchParams }: NotesPageProps) {
   const t = await getTranslations("notes");
   const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
-    redirect("/");
-  }
+  if (!session?.user?.id) redirect("/");
 
   const { q, tag } = await searchParams;
 
@@ -34,9 +33,7 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
     }),
     ...(tag && {
       tags: {
-        some: {
-          id: tag,
-        },
+        some: { id: tag },
       },
     }),
   };
@@ -45,18 +42,14 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
     prisma.note.findMany({
       where: whereCondition,
       include: { tags: { where: { softDelete: false } } },
-      orderBy: {
-        updatedAt: "desc",
-      },
+      orderBy: { updatedAt: "desc" },
     }),
     prisma.tag.findMany({
       where: {
         userId: session.user.id,
         softDelete: false,
       },
-      orderBy: {
-        createdAt: "desc",
-      },
+      orderBy: { createdAt: "desc" },
     }),
   ]);
 
