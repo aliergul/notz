@@ -87,7 +87,10 @@
     "unnamed_note": "Başlıksız Not",
     "edit_note_success": "Not başarıyla güncellendi.",
     "tags_label": "Etiketler",
-    "no_tags_placeholder": "Etiket yok"
+    "no_tags_placeholder": "Etiket yok",
+    "search_placeholder": "Notlarda ara...",
+    "filter_by_tag": "Etikete göre filtrele",
+    "all_tags": "Tüm Etiketler"
   },
   "trash": {
     "title": "Çöp Kutusu",

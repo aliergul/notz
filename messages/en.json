@@ -156,6 +156,9 @@
     "selected_tag_action": "tags selected",
     "select_tag_action": "Select a tag...",
     "tag_not_found": "No tag found.",
-    "tag_search": "Search tags..."
+    "tag_search": "Search tags...",
+    "search_placeholder": "Search in notes...",
+    "filter_by_tag": "Filter by tag",
+    "all_tags": "All Tags"
   }
 }

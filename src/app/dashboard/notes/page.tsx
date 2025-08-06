@@ -5,20 +5,45 @@ import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import NewNoteDialog from "@/components/notes/NewNoteDialog";
 import NoteCard from "@/components/notes/NoteCard";
+import NoteFilters from "@/components/notes/NoteFilters";
 
-export default async function NotesPage() {
+interface NotesPageProps {
+  searchParams: {
+    q?: string;
+    tag?: string;
+  };
+}
+
+export default async function NotesPage({ searchParams }: NotesPageProps) {
   const t = await getTranslations("notes");
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
     redirect("/");
   }
 
+  const { q, tag } = await searchParams;
+
+  const whereCondition = {
+    userId: session.user.id,
+    softDelete: false,
+    ...(q && {
+      title: {
+        contains: q,
+        mode: "insensitive" as const,
+      },
+    }),
+    ...(tag && {
+      tags: {
+        some: {
+          id: tag,
+        },
+      },
+    }),
+  };
+
   const [notes, allTags] = await Promise.all([
     prisma.note.findMany({
-      where: {
-        userId: session.user.id,
-        softDelete: false,
-      },
+      where: whereCondition,
       include: { tags: { where: { softDelete: false } } },
       orderBy: {
         updatedAt: "desc",
@@ -42,6 +67,10 @@ export default async function NotesPage() {
         <div className="ml-auto">
           <NewNoteDialog allTags={allTags} />
         </div>
+      </div>
+
+      <div className="py-4">
+        <NoteFilters allTags={allTags} />
       </div>
 
       <div className="flex-1">
