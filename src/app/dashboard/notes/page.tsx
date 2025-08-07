@@ -10,11 +10,9 @@ import NoteFilters from "@/components/notes/NoteFilters";
 export const dynamic = "force-dynamic";
 
 interface NotesPageProps {
-  searchParams: {
-    q?: string;
-    tag?: string;
-  };
+  searchParams: Promise<{ q?: string; tag?: string }>;
 }
+
 export default async function NotesPage({ searchParams }: NotesPageProps) {
   const t = await getTranslations("notes");
   const session = await getServerSession(authOptions);
