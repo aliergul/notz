@@ -5,19 +5,47 @@ import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import NewTagDialog from "@/components/tags/NewTagDialog";
 import TagCard from "@/components/tags/TagCard";
+import TagFilters from "@/components/tags/TagFilters";
+import type { Prisma } from "@prisma/client";
 
-export default async function TagsPage() {
+export const dynamic = "force-dynamic";
+
+interface TagsPageProps {
+  searchParams: Promise<{ q?: string }>;
+}
+
+export default async function TagsPage({ searchParams }: TagsPageProps) {
   const t = await getTranslations("tags");
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
     redirect("/");
   }
 
+  const { q } = await searchParams;
+
+  const whereCondition: Prisma.TagWhereInput = {
+    userId: session.user.id,
+    softDelete: false,
+    ...(q && {
+      OR: [
+        {
+          name: {
+            contains: q,
+            mode: "insensitive",
+          },
+        },
+        {
+          description: {
+            contains: q,
+            mode: "insensitive",
+          },
+        },
+      ],
+    }),
+  };
+
   const tags = await prisma.tag.findMany({
-    where: {
-      userId: session.user.id,
-      softDelete: false,
-    },
+    where: whereCondition,
     orderBy: {
       createdAt: "desc",
     },
@@ -30,6 +58,10 @@ export default async function TagsPage() {
         <div className="ml-auto">
           <NewTagDialog />
         </div>
+      </div>
+
+      <div className="py-4">
+        <TagFilters />
       </div>
 
       <div className="flex-1 rounded-lg border border-dashed shadow-sm p-4">

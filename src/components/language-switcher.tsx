@@ -28,12 +28,16 @@ export default function LanguageSwitcher() {
       onValueChange={onSelectChange}
       disabled={isPending}
     >
-      <SelectTrigger className="w-[120px]">
+      <SelectTrigger className="w-[120px] cursor-pointer">
         <SelectValue placeholder="Dil" />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="tr">🇹🇷 Türkçe</SelectItem>
-        <SelectItem value="en">🇬🇧 English</SelectItem>
+        <SelectItem value="tr" className="cursor-pointer">
+          🇹🇷 Türkçe
+        </SelectItem>
+        <SelectItem value="en" className="cursor-pointer">
+          🇬🇧 English
+        </SelectItem>
       </SelectContent>
     </Select>
   );

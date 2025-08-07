@@ -85,7 +85,12 @@
     "save_changes": "Save Changes",
     "permanent_delete_checkbox": "Permanently delete this note",
     "unnamed_note": "Untitled Note",
-    "edit_note_success": "Note updated successfully."
+    "edit_note_success": "Note updated successfully.",
+    "tags_label": "Tags",
+    "no_tags_placeholder": "No tags",
+    "search_placeholder": "Search in notes...",
+    "filter_by_tag": "Filter by tag",
+    "all_tags": "All Tags"
   },
   "trash": {
     "title": "Trash",
@@ -133,6 +138,7 @@
     "permanent_delete_checkbox": "Permanently delete this task",
     "pick_a_status": "Select Status",
     "status_label": "Status",
+    "tags_label": "Tags",
     "search_placeholder": "Search in todos...",
     "filter_by_tag": "Filter by tag",
     "all_tags": "All Tags"
@@ -156,12 +162,10 @@
     "delete_tag_confirmation_title": "Delete Tag?",
     "delete_tag_confirmation_desc": "This tag will be moved to the trash. It will be removed from any notes and tasks that have it.",
     "permanent_delete_checkbox": "Permanently delete this tag",
-    "selected_tag_action": "tags selected",
+    "selected_tags_action": "tags selected",
     "select_tag_action": "Select a tag...",
     "tag_not_found": "No tag found.",
     "tag_search": "Search tags...",
-    "search_placeholder": "Search in notes...",
-    "filter_by_tag": "Filter by tag",
-    "all_tags": "All Tags"
+    "search_placeholder": "Search in tags..."
   }
 }

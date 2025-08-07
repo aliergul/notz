@@ -165,6 +165,7 @@
     "selected_tags_action": "etiket seçildi",
     "select_tag_action": "Etiket seçin...",
     "tag_not_found": "Etiket bulunamadı.",
-    "tag_search": "Etiket ara..."
+    "tag_search": "Etiket ara...",
+    "search_placeholder": "Etiketlerde ara..."
   }
 }
