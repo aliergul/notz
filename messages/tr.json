@@ -138,7 +138,10 @@
     "permanent_delete_checkbox": "Bu görevi kalıcı olarak sil",
     "pick_a_status": "Durum Seçin",
     "status_label": "Durum",
-    "tags_label": "Etiketler"
+    "tags_label": "Etiketler",
+    "search_placeholder": "Görevlerde ara...",
+    "filter_by_tag": "Etikete göre filtrele",
+    "all_tags": "Tüm Etiketler"
   },
   "tags": {
     "title": "Etiketler",

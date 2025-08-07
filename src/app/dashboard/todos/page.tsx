@@ -5,17 +5,52 @@ import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import NewTodoDialog from "@/components/todos/NewTodoDialog";
 import TodoBoard from "@/components/todos/TodoBoard";
+import TodoFilters from "@/components/todos/TodoFilters";
+import { Prisma } from "@prisma/client";
 
-export default async function TodosPage() {
+interface TodosPageProps {
+  searchParams: Promise<{ q?: string; tag?: string }>;
+}
+export default async function TodosPage({ searchParams }: TodosPageProps) {
   const t = await getTranslations("todos");
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
     redirect("/");
   }
 
+  const { q, tag } = await searchParams;
+
+  const whereCondition: Prisma.TodoWhereInput = {
+    userId: session.user.id,
+    softDelete: false,
+  };
+
+  if (q) {
+    whereCondition.OR = [
+      {
+        title: {
+          contains: q,
+          mode: "insensitive",
+        },
+      },
+      {
+        description: {
+          contains: q,
+          mode: "insensitive",
+        },
+      },
+    ];
+  }
+
+  if (tag) {
+    whereCondition.tags = {
+      some: { id: tag },
+    };
+  }
+
   const [todos, allTags] = await Promise.all([
     prisma.todo.findMany({
-      where: { userId: session.user.id, softDelete: false },
+      where: whereCondition,
       include: { tags: { where: { softDelete: false } } },
       orderBy: { updatedAt: "desc" },
     }),
@@ -32,6 +67,10 @@ export default async function TodosPage() {
         <div className="ml-auto">
           <NewTodoDialog allTags={allTags} />
         </div>
+      </div>
+
+      <div className="py-4">
+        <TodoFilters allTags={allTags} />
       </div>
 
       {todos.length === 0 ? (

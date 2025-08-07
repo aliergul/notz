@@ -132,7 +132,10 @@
     "status_done": "Done",
     "permanent_delete_checkbox": "Permanently delete this task",
     "pick_a_status": "Select Status",
-    "status_label": "Status"
+    "status_label": "Status",
+    "search_placeholder": "Search in todos...",
+    "filter_by_tag": "Filter by tag",
+    "all_tags": "All Tags"
   },
   "tags": {
     "title": "Tags",
