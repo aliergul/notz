@@ -79,9 +79,11 @@ export default function NoteFilters({ allTags }: NoteFiltersProps) {
           <SelectValue placeholder={t("filter_by_tag")} />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all_tags">{t("all_tags")}</SelectItem>
+          <SelectItem value="all_tags" className="cursor-pointer">
+            {t("all_tags")}
+          </SelectItem>
           {allTags.map((tag) => (
-            <SelectItem key={tag.id} value={tag.id}>
+            <SelectItem key={tag.id} value={tag.id} className="cursor-pointer">
               <div className="flex items-center gap-2">
                 <div
                   className="h-2 w-2 rounded-full"

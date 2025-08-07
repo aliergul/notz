@@ -6,6 +6,7 @@ import prisma from "@/lib/prisma";
 import NewNoteDialog from "@/components/notes/NewNoteDialog";
 import NoteCard from "@/components/notes/NoteCard";
 import NoteFilters from "@/components/notes/NoteFilters";
+import { Prisma } from "@prisma/client";
 
 export const dynamic = "force-dynamic";
 
@@ -20,21 +21,33 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
 
   const { q, tag } = await searchParams;
 
-  const whereCondition = {
+  const whereCondition: Prisma.NoteWhereInput = {
     userId: session.user.id,
     softDelete: false,
-    ...(q && {
-      title: {
-        contains: q,
-        mode: "insensitive" as const,
-      },
-    }),
-    ...(tag && {
-      tags: {
-        some: { id: tag },
-      },
-    }),
   };
+
+  if (q) {
+    whereCondition.OR = [
+      {
+        title: {
+          contains: q,
+          mode: "insensitive",
+        },
+      },
+      {
+        content: {
+          contains: q,
+          mode: "insensitive",
+        },
+      },
+    ];
+  }
+
+  if (tag) {
+    whereCondition.tags = {
+      some: { id: tag },
+    };
+  }
 
   const [notes, allTags] = await Promise.all([
     prisma.note.findMany({
