@@ -113,7 +113,7 @@ export async function softDeleteTag(tagId: string) {
 }
 
 // Tag - Permanent Delete
-export async function deleteTagPermanent(tagId: string) {
+export async function permanentDeleteTag(tagId: string) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return { error: "session_not_found" };
 

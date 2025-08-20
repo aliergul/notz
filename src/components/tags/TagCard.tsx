@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { softDeleteTag, deleteTagPermanent } from "@/actions/tags";
+import { softDeleteTag, permanentDeleteTag } from "@/actions/tags";
 import EditTagDialog from "./EditTagDialog";
 import ButtonSpinner from "../spinner";
 import clsx from "clsx";
@@ -42,7 +42,7 @@ export default function TagCard({ tag }: TagCardProps) {
   const handleDelete = async () => {
     setIsDeleting(true);
     if (isPermanentDelete) {
-      await deleteTagPermanent(tag.id);
+      await permanentDeleteTag(tag.id);
     } else {
       await softDeleteTag(tag.id);
     }

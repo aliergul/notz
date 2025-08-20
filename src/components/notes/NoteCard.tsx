@@ -32,7 +32,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { softDeleteNote, deleteNotePermanently } from "@/actions/notes";
+import { softDeleteNote, permanentDeleteNote } from "@/actions/notes";
 import ButtonSpinner from "../spinner";
 import EditNoteDialog from "./EditNoteDialog";
 import clsx from "clsx";
@@ -56,7 +56,7 @@ export default function NoteCard({ note, allTags }: NoteCardProps) {
   const handleDelete = async () => {
     setIsDeleting(true);
     if (isPermanentDelete) {
-      await deleteNotePermanently(note.id);
+      await permanentDeleteNote(note.id);
     } else {
       await softDeleteNote(note.id);
     }

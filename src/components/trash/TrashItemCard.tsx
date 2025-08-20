@@ -15,7 +15,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { restoreItem, deleteItemPermanently } from "@/actions/trash";
+import { restoreItem, permanentDeleteItem } from "@/actions/trash";
 import { RotateCw, Trash2 } from "lucide-react";
 import ButtonSpinner from "../spinner";
 
@@ -42,7 +42,7 @@ export default function TrashItemCard({ item, type }: TrashItemCardProps) {
 
   const handleDelete = async () => {
     setIsDeleting(true);
-    await deleteItemPermanently(item.id, type);
+    await permanentDeleteItem(item.id, type);
     setIsDeleting(false);
   };
 

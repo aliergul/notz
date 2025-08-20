@@ -139,7 +139,7 @@ export async function softDeleteNote(noteId: string) {
 }
 
 // Note - Permanent Delete
-export async function deleteNotePermanently(noteId: string) {
+export async function permanentDeleteNote(noteId: string) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return { error: "session_not_found" };
 

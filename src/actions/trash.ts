@@ -30,7 +30,7 @@ export async function restoreItem(itemId: string, type: ItemType) {
 }
 
 // Trash - Delete Item Permanently
-export async function deleteItemPermanently(itemId: string, type: ItemType) {
+export async function permanentDeleteItem(itemId: string, type: ItemType) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) return { error: "session_not_found" };
 
