@@ -113,17 +113,23 @@ export default function NewTodoDialog({ allTags }: NewTodoDialogProps) {
               {t("status_label")}
             </Label>
             <Select name="status" defaultValue={TodoStatus.NOT_STARTED}>
-              <SelectTrigger className="col-span-3">
-                <SelectValue placeholder="Durum seçin" />
+              <SelectTrigger className="col-span-3 cursor-pointer">
+                <SelectValue placeholder={t("pick_a_status")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value={TodoStatus.NOT_STARTED}>
+                <SelectItem
+                  value={TodoStatus.NOT_STARTED}
+                  className="cursor-pointer"
+                >
                   {t("status_not_started")}
                 </SelectItem>
-                <SelectItem value={TodoStatus.IN_PROGRESS}>
+                <SelectItem
+                  value={TodoStatus.IN_PROGRESS}
+                  className="cursor-pointer"
+                >
                   {t("status_in_progress")}
                 </SelectItem>
-                <SelectItem value={TodoStatus.DONE}>
+                <SelectItem value={TodoStatus.DONE} className="cursor-pointer">
                   {t("status_done")}
                 </SelectItem>
               </SelectContent>
@@ -135,20 +141,32 @@ export default function NewTodoDialog({ allTags }: NewTodoDialogProps) {
               {t("priority_label")}
             </Label>
             <Select name="priority" defaultValue={PriorityLevel.MEDIUM}>
-              <SelectTrigger className="col-span-3">
-                <SelectValue placeholder="Öncelik seçin" />
+              <SelectTrigger className="col-span-3 cursor-pointer">
+                <SelectValue placeholder={t("pick_a_priority")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value={PriorityLevel.LOW}>
+                <SelectItem
+                  value={PriorityLevel.LOW}
+                  className="cursor-pointer"
+                >
                   {t("priority_low")}
                 </SelectItem>
-                <SelectItem value={PriorityLevel.MEDIUM}>
+                <SelectItem
+                  value={PriorityLevel.MEDIUM}
+                  className="cursor-pointer"
+                >
                   {t("priority_medium")}
                 </SelectItem>
-                <SelectItem value={PriorityLevel.HIGH}>
+                <SelectItem
+                  value={PriorityLevel.HIGH}
+                  className="cursor-pointer"
+                >
                   {t("priority_high")}
                 </SelectItem>
-                <SelectItem value={PriorityLevel.URGENT}>
+                <SelectItem
+                  value={PriorityLevel.URGENT}
+                  className="cursor-pointer"
+                >
                   {t("priority_urgent")}
                 </SelectItem>
               </SelectContent>

@@ -32,9 +32,17 @@ export default function TodoBoard({ todos, allTags }: TodoBoardProps) {
             {column.title} ({column.tasks.length})
           </h2>
           <div className="flex flex-col gap-4 rounded-lg border p-2 min-h-[200px]">
-            {column.tasks.map((todo) => (
-              <TodoCard key={todo.id} todo={todo} allTags={allTags} />
-            ))}
+            {column.tasks.length === 0 ? (
+              <div className="flex flex-1 items-center justify-center text-center p-4">
+                <p className="text-sm text-muted-foreground">
+                  {t("empty_column_placeholder")}
+                </p>
+              </div>
+            ) : (
+              column.tasks.map((todo) => (
+                <TodoCard key={todo.id} todo={todo} allTags={allTags} />
+              ))
+            )}
           </div>
         </div>
       ))}

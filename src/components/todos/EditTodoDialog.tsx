@@ -125,17 +125,23 @@ export default function EditTodoDialog({
               {t_todos("status_label")}
             </Label>
             <Select name="status" defaultValue={todo.status}>
-              <SelectTrigger className="col-span-3">
+              <SelectTrigger className="col-span-3 cursor-pointer">
                 <SelectValue placeholder={t_todos("pick_a_status")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value={TodoStatus.NOT_STARTED}>
+                <SelectItem
+                  value={TodoStatus.NOT_STARTED}
+                  className="cursor-pointer"
+                >
                   {t_todos("status_not_started")}
                 </SelectItem>
-                <SelectItem value={TodoStatus.IN_PROGRESS}>
+                <SelectItem
+                  value={TodoStatus.IN_PROGRESS}
+                  className="cursor-pointer"
+                >
                   {t_todos("status_in_progress")}
                 </SelectItem>
-                <SelectItem value={TodoStatus.DONE}>
+                <SelectItem value={TodoStatus.DONE} className="cursor-pointer">
                   {t_todos("status_done")}
                 </SelectItem>
               </SelectContent>
@@ -147,20 +153,32 @@ export default function EditTodoDialog({
               {t_todos("priority_label")}
             </Label>
             <Select name="priority" defaultValue={todo.priority}>
-              <SelectTrigger className="col-span-3">
-                <SelectValue placeholder="Öncelik seçin" />
+              <SelectTrigger className="col-span-3 cursor-pointer">
+                <SelectValue placeholder={t_todos("pick_a_priority")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value={PriorityLevel.LOW}>
+                <SelectItem
+                  value={PriorityLevel.LOW}
+                  className="cursor-pointer"
+                >
                   {t_todos("priority_low")}
                 </SelectItem>
-                <SelectItem value={PriorityLevel.MEDIUM}>
+                <SelectItem
+                  value={PriorityLevel.MEDIUM}
+                  className="cursor-pointer"
+                >
                   {t_todos("priority_medium")}
                 </SelectItem>
-                <SelectItem value={PriorityLevel.HIGH}>
+                <SelectItem
+                  value={PriorityLevel.HIGH}
+                  className="cursor-pointer"
+                >
                   {t_todos("priority_high")}
                 </SelectItem>
-                <SelectItem value={PriorityLevel.URGENT}>
+                <SelectItem
+                  value={PriorityLevel.URGENT}
+                  className="cursor-pointer"
+                >
                   {t_todos("priority_urgent")}
                 </SelectItem>
               </SelectContent>
@@ -172,7 +190,7 @@ export default function EditTodoDialog({
               {t_todos("dueDate_label")}
             </Label>
             <Popover>
-              <PopoverTrigger asChild>
+              <PopoverTrigger asChild className="cursor-pointer">
                 <Button
                   variant={"outline"}
                   className={cn(

@@ -103,7 +103,10 @@
     "todos": "Yapılacaklar",
     "permanent_delete_confirmation_title": "Kalıcı Olarak Sil?",
     "permanent_delete_confirmation_desc": "Bu işlem geri alınamaz. Bu öğe veritabanından tamamen silinecektir.",
-    "cancel": "İptal"
+    "cancel": "İptal",
+    "empty_tab_notes": "Silinmiş not yok.",
+    "empty_tab_todos": "Silinmiş görev yok.",
+    "empty_tab_tags": "Silinmiş etiket yok."
   },
   "todos": {
     "title": "Yapılacaklar",
@@ -137,11 +140,13 @@
     "status_done": "Tamamlandı",
     "permanent_delete_checkbox": "Bu görevi kalıcı olarak sil",
     "pick_a_status": "Durum Seçin",
+    "pick_a_priority": "Öncelik Seçin",
     "status_label": "Durum",
     "tags_label": "Etiketler",
     "search_placeholder": "Görevlerde ara...",
     "filter_by_tag": "Etikete göre filtrele",
-    "all_tags": "Tüm Etiketler"
+    "all_tags": "Tüm Etiketler",
+    "empty_column_placeholder": "Bu kolonda görev yok."
   },
   "tags": {
     "title": "Etiketler",

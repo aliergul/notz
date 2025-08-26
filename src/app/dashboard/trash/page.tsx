@@ -6,9 +6,16 @@ import prisma from "@/lib/prisma";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import TrashItemCard from "@/components/trash/TrashItemCard";
 
+function EmptyTabPlaceholder({ message }: { message: string }) {
+  return (
+    <div className="flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm p-10">
+      <p className="text-muted-foreground">{message}</p>
+    </div>
+  );
+}
+
 export default async function TrashPage() {
   const t = await getTranslations("trash");
-
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
     redirect("/");
@@ -32,17 +39,15 @@ export default async function TrashPage() {
   const allItems = [...deletedNotes, ...deletedTags, ...deletedTodos];
 
   return (
-    <>
+    <div className="flex flex-col gap-4 h-full">
       <div className="flex items-center">
         <h1 className="text-lg font-semibold md:text-2xl">{t("title")}</h1>
       </div>
 
       {allItems.length === 0 ? (
-        <div className="flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm">
-          <p className="text-muted-foreground">{t("empty_trash")}</p>
-        </div>
+        <EmptyTabPlaceholder message={t("empty_trash")} />
       ) : (
-        <Tabs defaultValue="notes" className="flex-1">
+        <Tabs defaultValue="notes" className="flex-1 mt-4">
           <TabsList>
             <TabsTrigger value="notes" className="cursor-pointer">
               {t("notes")} ({deletedNotes.length})
@@ -56,28 +61,40 @@ export default async function TrashPage() {
           </TabsList>
 
           <TabsContent value="notes" className="mt-4">
-            <div className="grid gap-4">
-              {deletedNotes.map((note) => (
-                <TrashItemCard key={note.id} item={note} type="note" />
-              ))}
-            </div>
+            {deletedNotes.length === 0 ? (
+              <EmptyTabPlaceholder message={t("empty_tab_notes")} />
+            ) : (
+              <div className="grid gap-4">
+                {deletedNotes.map((note) => (
+                  <TrashItemCard key={note.id} item={note} type="note" />
+                ))}
+              </div>
+            )}
           </TabsContent>
           <TabsContent value="todos" className="mt-4">
-            <div className="grid gap-4">
-              {deletedTodos.map((todo) => (
-                <TrashItemCard key={todo.id} item={todo} type="todo" />
-              ))}
-            </div>
+            {deletedTodos.length === 0 ? (
+              <EmptyTabPlaceholder message={t("empty_tab_todos")} />
+            ) : (
+              <div className="grid gap-4">
+                {deletedTodos.map((todo) => (
+                  <TrashItemCard key={todo.id} item={todo} type="todo" />
+                ))}
+              </div>
+            )}
           </TabsContent>
           <TabsContent value="tags" className="mt-4">
-            <div className="grid gap-4">
-              {deletedTags.map((tag) => (
-                <TrashItemCard key={tag.id} item={tag} type="tag" />
-              ))}
-            </div>
+            {deletedTags.length === 0 ? (
+              <EmptyTabPlaceholder message={t("empty_tab_tags")} />
+            ) : (
+              <div className="grid gap-4">
+                {deletedTags.map((tag) => (
+                  <TrashItemCard key={tag.id} item={tag} type="tag" />
+                ))}
+              </div>
+            )}
           </TabsContent>
         </Tabs>
       )}
-    </>
+    </div>
   );
 }

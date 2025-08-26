@@ -103,7 +103,10 @@
     "todos": "Todos",
     "permanent_delete_confirmation_title": "Delete Permanently?",
     "permanent_delete_confirmation_desc": "This action cannot be undone. This item will be permanently deleted from the database.",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "empty_tab_notes": "No deleted notes.",
+    "empty_tab_todos": "No deleted todos.",
+    "empty_tab_tags": "No deleted tags."
   },
   "todos": {
     "title": "Todos",
@@ -137,11 +140,13 @@
     "status_done": "Done",
     "permanent_delete_checkbox": "Permanently delete this task",
     "pick_a_status": "Select Status",
+    "pick_a_priority": "Select Priority",
     "status_label": "Status",
     "tags_label": "Tags",
     "search_placeholder": "Search in todos...",
     "filter_by_tag": "Filter by tag",
-    "all_tags": "All Tags"
+    "all_tags": "All Tags",
+    "empty_column_placeholder": "No tasks in this column."
   },
   "tags": {
     "title": "Tags",
