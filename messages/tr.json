@@ -148,7 +148,9 @@
     "search_placeholder": "Görevlerde ara...",
     "filter_by_tag": "Etikete göre filtrele",
     "all_tags": "Tüm Etiketler",
-    "empty_column_placeholder": "Bu kolonda görev yok."
+    "empty_column_placeholder": "Bu kolonda görev yok.",
+    "back_to_todos": "Tüm Görevlere Geri Dön",
+    "view_todo_details": "Görev detaylarını görüntüle"
   },
   "tags": {
     "title": "Etiketler",

@@ -148,7 +148,9 @@
     "search_placeholder": "Search in todos...",
     "filter_by_tag": "Filter by tag",
     "all_tags": "All Tags",
-    "empty_column_placeholder": "No tasks in this column."
+    "empty_column_placeholder": "No tasks in this column.",
+    "back_to_todos": "Back to All Todos",
+    "view_todo_details": "View todo details"
   },
   "tags": {
     "title": "Tags",
