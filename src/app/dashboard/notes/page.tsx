@@ -56,10 +56,7 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
       orderBy: { updatedAt: "desc" },
     }),
     prisma.tag.findMany({
-      where: {
-        userId: session.user.id,
-        softDelete: false,
-      },
+      where: { userId: session.user.id, softDelete: false },
       orderBy: { createdAt: "desc" },
     }),
   ]);
@@ -83,7 +80,7 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
             <p className="text-muted-foreground">{t("empty_page")}</p>
           </div>
         ) : (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="flex flex-col gap-2">
             {notes.map((note) => (
               <NoteCard key={note.id} note={note} allTags={allTags} />
             ))}

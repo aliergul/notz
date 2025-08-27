@@ -90,7 +90,9 @@
     "no_tags_placeholder": "Etiket yok",
     "search_placeholder": "Notlarda ara...",
     "filter_by_tag": "Etikete göre filtrele",
-    "all_tags": "Tüm Etiketler"
+    "all_tags": "Tüm Etiketler",
+    "back_to_notes": "Tüm Notlara Geri Dön",
+    "view_note_details": "Not detayına git"
   },
   "trash": {
     "title": "Çöp Kutusu",

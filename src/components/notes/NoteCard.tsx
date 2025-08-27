@@ -2,22 +2,9 @@
 
 import { useState } from "react";
 import type { Note, Tag } from "@prisma/client";
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
-import { useFormatter, useTranslations } from "next-intl";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import Link from "next/link";
+import { Pencil, Trash2, Tag as TagIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -36,8 +23,13 @@ import { softDeleteNote, permanentDeleteNote } from "@/actions/notes";
 import ButtonSpinner from "../spinner";
 import EditNoteDialog from "./EditNoteDialog";
 import clsx from "clsx";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Badge } from "../ui/badge";
-import TruncateWithTooltip from "@/components/truncate-with-tooltip";
 
 type NoteWithTags = Note & { tags: Tag[] };
 
@@ -48,10 +40,10 @@ interface NoteCardProps {
 
 export default function NoteCard({ note, allTags }: NoteCardProps) {
   const t = useTranslations("notes");
-  const format = useFormatter();
   const [isDeleting, setIsDeleting] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isPermanentDelete, setIsPermanentDelete] = useState(false);
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
 
   const handleDelete = async () => {
     setIsDeleting(true);
@@ -61,132 +53,133 @@ export default function NoteCard({ note, allTags }: NoteCardProps) {
       await softDeleteNote(note.id);
     }
     setIsDeleting(false);
+    setIsAlertOpen(false);
+  };
+
+  const handleAlertOpenChange = (open: boolean) => {
+    if (!open) {
+      setIsPermanentDelete(false);
+    }
+    setIsAlertOpen(open);
   };
 
   return (
     <>
-      <Card className="flex h-64 flex-col">
-        <CardHeader>
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex-1 min-w-0">
-              <CardTitle className="truncate">
-                <TruncateWithTooltip
-                  text={note.title || t("unnamed_note")}
-                  maxLength={50}
-                />
-              </CardTitle>
-            </div>
-            <AlertDialog>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="cursor-pointer"
-                  >
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem
-                    onSelect={() => setIsEditOpen(true)}
-                    className="cursor-pointer"
-                  >
-                    <Pencil className="mr-2 h-4 w-4" />
-                    <span>{t("edit")}</span>
-                  </DropdownMenuItem>
-                  <AlertDialogTrigger asChild>
-                    <DropdownMenuItem className="text-red-500 cursor-pointer">
-                      <Trash2 className="mr-2 h-4 w-4" />
-                      <span>{t("delete")}</span>
-                    </DropdownMenuItem>
-                  </AlertDialogTrigger>
-                </DropdownMenuContent>
-              </DropdownMenu>
-
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>
-                    {t("delete_note_confirmation_title")}
-                  </AlertDialogTitle>
-                  <AlertDialogDescription
-                    className={clsx(
-                      "cursor-pointer",
-                      isPermanentDelete ? "line-through" : ""
-                    )}
-                  >
-                    {t("delete_note_confirmation_desc")}
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <div className="flex items-center space-x-2 my-4">
-                  <Checkbox
-                    id="permanent-delete"
-                    className="cursor-pointer"
-                    onCheckedChange={(checked) =>
-                      setIsPermanentDelete(Boolean(checked))
-                    }
-                  />
-                  <Label
-                    htmlFor="permanent-delete"
-                    className="text-sm font-medium leading-none text-red-600 cursor-pointer"
-                  >
-                    {t("permanent_delete_checkbox")}
-                  </Label>
-                </div>
-                <AlertDialogFooter>
-                  <AlertDialogCancel className="cursor-pointer">
-                    {t("cancel")}
-                  </AlertDialogCancel>
-                  <AlertDialogAction
-                    onClick={handleDelete}
-                    disabled={isDeleting}
-                    className="cursor-pointer"
-                  >
-                    {isDeleting && <ButtonSpinner />} {t("delete")}
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+      <div className="group relative flex items-center justify-between rounded-lg border bg-card p-3 transition-colors hover:bg-muted/50 w-full">
+        <div className="flex-1 min-w-0">
+          <div className="truncate font-medium">
+            {note.title || t("unnamed_note")}
           </div>
-        </CardHeader>
-
-        <CardContent className="flex-1 overflow-hidden">
-          <p className="text-sm text-muted-foreground text-left">
-            <TruncateWithTooltip text={note.content} maxLength={220} />
-          </p>
-        </CardContent>
-
-        <CardFooter className="flex flex-col items-start gap-2 pt-2">
-          <CardDescription className="text-xs">
-            {t("last_update")}:{" "}
-            {format.dateTime(new Date(note.updatedAt), {
-              year: "numeric",
-              month: "short",
-              day: "numeric",
-            })}
-          </CardDescription>
-          <div className="flex flex-wrap gap-1">
+          <div className="flex items-center gap-1 flex-wrap mt-2 min-h-6">
             {note.tags.length > 0 ? (
-              note.tags.map((tag) => (
-                <Badge
-                  key={tag.id}
-                  variant="outline"
-                  style={{
-                    borderColor: tag.color || undefined,
-                    color: tag.color || undefined,
-                  }}
-                >
-                  {tag.name}
-                </Badge>
-              ))
+              <>
+                {note.tags.slice(0, 3).map((tag) => (
+                  <Badge
+                    key={tag.id}
+                    variant="outline"
+                    className="text-xs"
+                    style={{
+                      borderColor: tag.color || undefined,
+                      color: tag.color || undefined,
+                    }}
+                  >
+                    {tag.name}
+                  </Badge>
+                ))}
+                {note.tags.length > 3 && (
+                  <Badge variant="secondary" className="text-xs">
+                    +{note.tags.length - 3}
+                  </Badge>
+                )}
+              </>
             ) : (
-              <p className="text-xs text-muted-foreground italic">
-                {t("no_tags_placeholder")}
-              </p>
+              <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                <TagIcon className="h-3 w-3" />
+                <span>0</span>
+              </div>
             )}
           </div>
-        </CardFooter>
-      </Card>
+        </div>
+
+        <div className="relative z-20 flex items-center gap-2 ml-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-7 w-7 cursor-pointer text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity"
+            onClick={() => setIsEditOpen(true)}
+          >
+            <Pencil className="h-3 w-3" />
+          </Button>
+
+          <AlertDialog open={isAlertOpen} onOpenChange={handleAlertOpenChange}>
+            <AlertDialogTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7 cursor-pointer text-muted-foreground hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
+              >
+                <Trash2 className="h-3 w-3" />
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  {t("delete_note_confirmation_title")}
+                </AlertDialogTitle>
+                <AlertDialogDescription
+                  className={clsx(isPermanentDelete ? "line-through" : "")}
+                >
+                  {t("delete_note_confirmation_desc")}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <div className="flex items-center space-x-2 my-4">
+                <Checkbox
+                  id={`permanent-delete-${note.id}`}
+                  className="cursor-pointer"
+                  checked={isPermanentDelete}
+                  onCheckedChange={(checked) =>
+                    setIsPermanentDelete(Boolean(checked))
+                  }
+                />
+                <Label
+                  htmlFor={`permanent-delete-${note.id}`}
+                  className="text-sm font-medium leading-none text-red-600 cursor-pointer"
+                >
+                  {t("permanent_delete_checkbox")}
+                </Label>
+              </div>
+              <AlertDialogFooter>
+                <AlertDialogCancel className="cursor-pointer">
+                  {t("cancel")}
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={handleDelete}
+                  disabled={isDeleting}
+                  className="cursor-pointer"
+                >
+                  {isDeleting && <ButtonSpinner />} {t("delete")}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link
+                href={`/dashboard/notes/${note.id}`}
+                className="absolute inset-0 z-10 rounded-lg"
+              >
+                <span className="sr-only">View note</span>
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{t("view_note_details")}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </div>
 
       <EditNoteDialog
         note={note}

@@ -90,7 +90,9 @@
     "no_tags_placeholder": "No tags",
     "search_placeholder": "Search in notes...",
     "filter_by_tag": "Filter by tag",
-    "all_tags": "All Tags"
+    "all_tags": "All Tags",
+    "back_to_notes": "Back to All Notes",
+    "view_note_details": "View note details"
   },
   "trash": {
     "title": "Trash",
