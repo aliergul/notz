@@ -1,9 +1,14 @@
 import React from "react";
+import { cn } from "@/lib/utils";
 
-export default function ButtonSpinner() {
+interface ButtonSpinnerProps {
+  className?: string;
+}
+
+export default function ButtonSpinner({ className }: ButtonSpinnerProps) {
   return (
     <svg
-      className="mr-3 -ml-1 size-5 animate-spin text-white"
+      className={cn("size-5 animate-spin", className)}
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"

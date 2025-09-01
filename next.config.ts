@@ -18,6 +18,10 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/u/**",
       },
+      {
+        protocol: "https",
+        hostname: "hatscripts.github.io",
+      },
     ],
   },
 };
