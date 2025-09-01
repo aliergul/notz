@@ -10,6 +10,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { TodoStatus } from "@prisma/client";
+import { cn } from "@/lib/utils";
 
 type TodoWithTags = Todo & { tags: Tag[] };
 
@@ -18,10 +19,25 @@ interface TodoBoardProps {
   allTags: Tag[];
 }
 
-const statusConfig: Record<TodoStatus, { icon: LucideIcon; color: string }> = {
-  NOT_STARTED: { icon: Circle, color: "text-muted-foreground" },
-  IN_PROGRESS: { icon: CircleDotDashed, color: "text-blue-500" },
-  DONE: { icon: CircleCheck, color: "text-green-500" },
+const statusConfig: Record<
+  TodoStatus,
+  { icon: LucideIcon; color: string; bgColor: string }
+> = {
+  NOT_STARTED: {
+    icon: Circle,
+    color: "text-muted-foreground",
+    bgColor: "bg-muted/50",
+  },
+  IN_PROGRESS: {
+    icon: CircleDotDashed,
+    color: "text-blue-500",
+    bgColor: "bg-blue-500/10",
+  },
+  DONE: {
+    icon: CircleCheck,
+    color: "text-green-500",
+    bgColor: "bg-green-500/10",
+  },
 };
 
 export default function TodoBoard({ todos, allTags }: TodoBoardProps) {
@@ -50,6 +66,8 @@ export default function TodoBoard({ todos, allTags }: TodoBoardProps) {
       {columns.map((column) => {
         const Icon = statusConfig[column.status].icon;
         const color = statusConfig[column.status].color;
+        const bgColor = statusConfig[column.status].bgColor;
+
         return (
           <div key={column.title} className="flex flex-col gap-4">
             <div className="flex items-center gap-2">
@@ -58,7 +76,12 @@ export default function TodoBoard({ todos, allTags }: TodoBoardProps) {
                 {column.title} ({column.tasks.length})
               </h2>
             </div>
-            <div className="flex flex-1 flex-col gap-4 rounded-lg bg-muted/50 p-2 min-h-[200px]">
+            <div
+              className={cn(
+                "flex flex-1 flex-col gap-4 rounded-lg p-2 min-h-[200px] transition-colors",
+                bgColor
+              )}
+            >
               {column.tasks.length === 0 ? (
                 <div className="flex flex-1 items-center justify-center text-center p-4">
                   <p className="text-sm text-muted-foreground">

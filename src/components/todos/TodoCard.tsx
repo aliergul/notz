@@ -74,7 +74,7 @@ export default function TodoCard({ todo, allTags }: TodoCardProps) {
   return (
     <>
       <TooltipProvider>
-        <div className="group relative flex items-center justify-between rounded-lg border bg-card p-3 transition-colors hover:bg-muted/50 w-full">
+        <div className="group relative flex items-center justify-between rounded-lg border bg-card p-3 transition-colors hover:bg-muted w-full">
           <div className="flex-1 min-w-0">
             <div className="truncate font-medium">{todo.title}</div>
             <div className="flex items-center gap-3 text-xs text-muted-foreground mt-2 flex-wrap min-h-6">
@@ -106,7 +106,7 @@ export default function TodoCard({ todo, allTags }: TodoCardProps) {
               )}
               {todo.tags.length > 0 ? (
                 <>
-                  {todo.tags.slice(0, 5).map((tag) => (
+                  {todo.tags.slice(0, 3).map((tag) => (
                     <Badge
                       key={tag.id}
                       variant="outline"
@@ -119,9 +119,9 @@ export default function TodoCard({ todo, allTags }: TodoCardProps) {
                       {tag.name}
                     </Badge>
                   ))}
-                  {todo.tags.length > 4 && (
+                  {todo.tags.length > 3 && (
                     <Badge variant="secondary" className="text-xs">
-                      +{todo.tags.length - 4}
+                      +{todo.tags.length - 3}
                     </Badge>
                   )}
                 </>
