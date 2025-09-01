@@ -55,7 +55,8 @@
     "soft_delete_tag_success": "Tag successfully moved to the trash.",
     "permanent_delete_tag_unexpected_err": "An unexpected error occurred while permanently deleting the tag.",
     "permanent_delete_tag_success": "Tag successfully deleted permanently.",
-    "fetch_notes_unexpected_err": "An unexpected error occurred while loading notes."
+    "fetch_notes_unexpected_err": "An unexpected error occurred while loading notes.",
+    "fetch_todos_unexpected_err": "An unexpected error occurred while loading todos."
   },
   "sidebar_navbar": {
     "home_page": "Home Page",
@@ -152,7 +153,8 @@
     "all_tags": "All Tags",
     "empty_column_placeholder": "No tasks in this column.",
     "back_to_todos": "Back to All Todos",
-    "view_todo_details": "View todo details"
+    "view_todo_details": "View todo details",
+    "load_more_button": "Load More"
   },
   "tags": {
     "title": "Tags",

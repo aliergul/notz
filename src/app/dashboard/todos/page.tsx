@@ -6,11 +6,14 @@ import prisma from "@/lib/prisma";
 import NewTodoDialog from "@/components/todos/NewTodoDialog";
 import TodoBoard from "@/components/todos/TodoBoard";
 import TodoFilters from "@/components/todos/TodoFilters";
-import { Prisma } from "@prisma/client";
+import { Prisma, TodoStatus } from "@prisma/client";
+
+export const dynamic = "force-dynamic";
 
 interface TodosPageProps {
   searchParams: Promise<{ q?: string; tag?: string }>;
 }
+
 export default async function TodosPage({ searchParams }: TodosPageProps) {
   const t = await getTranslations("todos");
   const session = await getServerSession(authOptions);
@@ -20,45 +23,70 @@ export default async function TodosPage({ searchParams }: TodosPageProps) {
 
   const { q, tag } = await searchParams;
 
-  const whereCondition: Prisma.TodoWhereInput = {
+  const baseWhereCondition: Prisma.TodoWhereInput = {
     userId: session.user.id,
     softDelete: false,
   };
-
   if (q) {
-    whereCondition.OR = [
-      {
-        title: {
-          contains: q,
-          mode: "insensitive",
-        },
-      },
-      {
-        description: {
-          contains: q,
-          mode: "insensitive",
-        },
-      },
+    baseWhereCondition.OR = [
+      { title: { contains: q, mode: "insensitive" } },
+      { description: { contains: q, mode: "insensitive" } },
     ];
   }
-
   if (tag) {
-    whereCondition.tags = {
-      some: { id: tag },
-    };
+    baseWhereCondition.tags = { some: { id: tag } };
   }
 
-  const [todos, allTags] = await Promise.all([
-    prisma.todo.findMany({
-      where: whereCondition,
-      include: { tags: { where: { softDelete: false } } },
-      orderBy: { updatedAt: "desc" },
-    }),
-    prisma.tag.findMany({
-      where: { userId: session.user.id, softDelete: false },
-      orderBy: { createdAt: "desc" },
-    }),
-  ]);
+  const [notStartedTasks, inProgressTasks, doneTasks, statusCounts, allTags] =
+    await Promise.all([
+      prisma.todo.findMany({
+        where: { ...baseWhereCondition, status: TodoStatus.NOT_STARTED },
+        include: { tags: { where: { softDelete: false } } },
+        orderBy: { updatedAt: "desc" },
+        take: 10,
+      }),
+      prisma.todo.findMany({
+        where: { ...baseWhereCondition, status: TodoStatus.IN_PROGRESS },
+        include: { tags: { where: { softDelete: false } } },
+        orderBy: { updatedAt: "desc" },
+        take: 10,
+      }),
+      prisma.todo.findMany({
+        where: { ...baseWhereCondition, status: TodoStatus.DONE },
+        include: { tags: { where: { softDelete: false } } },
+        orderBy: { updatedAt: "desc" },
+        take: 10,
+      }),
+      prisma.todo.groupBy({
+        by: ["status"],
+        where: baseWhereCondition,
+        _count: {
+          status: true,
+        },
+      }),
+      prisma.tag.findMany({
+        where: { userId: session.user.id, softDelete: false },
+        orderBy: { createdAt: "desc" },
+      }),
+    ]);
+
+  const getCount = (status: TodoStatus) =>
+    statusCounts.find((item) => item.status === status)?._count.status || 0;
+
+  const initialColumnsData = {
+    [TodoStatus.NOT_STARTED]: {
+      tasks: notStartedTasks,
+      total: getCount(TodoStatus.NOT_STARTED),
+    },
+    [TodoStatus.IN_PROGRESS]: {
+      tasks: inProgressTasks,
+      total: getCount(TodoStatus.IN_PROGRESS),
+    },
+    [TodoStatus.DONE]: {
+      tasks: doneTasks,
+      total: getCount(TodoStatus.DONE),
+    },
+  };
 
   return (
     <div className="flex flex-col gap-4 h-full">
@@ -73,18 +101,7 @@ export default async function TodosPage({ searchParams }: TodosPageProps) {
         <TodoFilters allTags={allTags} />
       </div>
 
-      {todos.length === 0 ? (
-        <div className="flex flex-1 flex-col items-center justify-center rounded-lg border border-dashed shadow-sm p-4">
-          <h3 className="text-2xl font-bold tracking-tight">
-            {t("empty_title")}
-          </h3>
-          <p className="text-sm text-muted-foreground">
-            {t("empty_description")}
-          </p>
-        </div>
-      ) : (
-        <TodoBoard todos={todos} allTags={allTags} />
-      )}
+      <TodoBoard initialColumnsData={initialColumnsData} allTags={allTags} />
     </div>
   );
 }

@@ -55,7 +55,8 @@
     "soft_delete_tag_success": "Etiket başarıyla çöp kutusuna taşındı.",
     "permanent_delete_tag_unexpected_err": "Etiket kalıcı olarak silinirken beklenmedik bir hata ile karşılaşıldı.",
     "permanent_delete_tag_success": "Etiket başarılı bir şekilde kalıcı olarak silindi.",
-    "fetch_notes_unexpected_err": "Notlar yüklenirken beklenmedik bir hata ile karşılaşıldı."
+    "fetch_notes_unexpected_err": "Notlar yüklenirken beklenmedik bir hata ile karşılaşıldı.",
+    "fetch_todos_unexpected_err": "Yapılacaklar yüklenirken beklenmedik bir hata ile karşılaşıldı."
   },
   "sidebar_navbar": {
     "home_page": "Ana Sayfa",
@@ -152,7 +153,8 @@
     "all_tags": "Tüm Etiketler",
     "empty_column_placeholder": "Bu kolonda görev yok.",
     "back_to_todos": "Tüm Görevlere Geri Dön",
-    "view_todo_details": "Görev detaylarını görüntüle"
+    "view_todo_details": "Görev detaylarını görüntüle",
+    "load_more_button": "Daha Fazla Yükle"
   },
   "tags": {
     "title": "Etiketler",

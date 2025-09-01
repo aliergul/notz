@@ -5,6 +5,9 @@ import { PriorityLevel, TodoStatus } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
 import z from "zod";
+import { Prisma } from "@prisma/client";
+
+const TODOS_PER_PAGE = 10;
 
 // Data Validation
 const todoSchema = z.object({
@@ -15,6 +18,53 @@ const todoSchema = z.object({
   status: z.enum(TodoStatus).optional(),
   tagIds: z.array(z.string()).optional(),
 });
+
+// Todo - Fetch
+export async function fetchTodos({
+  page = 1,
+  query,
+  tagId,
+  status,
+}: {
+  page: number;
+  query?: string;
+  tagId?: string;
+  status: TodoStatus;
+}) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) return { error: "session_not_found" };
+
+  const whereCondition: Prisma.TodoWhereInput = {
+    userId: session.user.id,
+    softDelete: false,
+    status: status,
+  };
+
+  if (query) {
+    whereCondition.OR = [
+      { title: { contains: query, mode: "insensitive" } },
+      { description: { contains: query, mode: "insensitive" } },
+    ];
+  }
+
+  if (tagId) {
+    whereCondition.tags = { some: { id: tagId } };
+  }
+
+  try {
+    const todos = await prisma?.todo.findMany({
+      where: whereCondition,
+      include: { tags: { where: { softDelete: false } } },
+      orderBy: { updatedAt: "desc" },
+      skip: (page - 1) * TODOS_PER_PAGE,
+      take: TODOS_PER_PAGE,
+    });
+    return { todos };
+  } catch (error) {
+    console.error("Unexpected error during fetch todos:", error);
+    return { error: "fetch_todos_unexpected_err" };
+  }
+}
 
 // Todo - Create
 export async function createTodo(formData: FormData) {

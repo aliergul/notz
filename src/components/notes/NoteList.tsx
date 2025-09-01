@@ -8,6 +8,7 @@ import NoteCard from "./NoteCard";
 import { Button } from "@/components/ui/button";
 import ButtonSpinner from "../spinner";
 import { useTranslations } from "next-intl";
+import { Plus } from "lucide-react";
 
 type NoteWithTags = Note & { tags: Tag[] };
 
@@ -31,6 +32,7 @@ export default function NoteList({
   useEffect(() => {
     setNotes(initialNotes);
     setPage(1);
+    window.scrollTo(0, 0);
   }, [initialNotes]);
 
   const hasMoreNotes = notes.length < totalNotes;
@@ -73,11 +75,18 @@ export default function NoteList({
           <Button
             onClick={loadMoreNotes}
             disabled={isLoading}
-            variant="outline"
-            className="cursor-pointer"
+            variant="ghost"
+            size="sm"
+            className="text-muted-foreground cursor-pointer"
           >
-            {isLoading && <ButtonSpinner />}
-            {t("load_more_button")}
+            {isLoading ? (
+              <ButtonSpinner />
+            ) : (
+              <>
+                <Plus className="h-4 w-4 mr-2" />
+                {t("load_more_button")}
+              </>
+            )}
           </Button>
         </div>
       )}
