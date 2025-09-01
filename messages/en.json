@@ -56,7 +56,9 @@
     "permanent_delete_tag_unexpected_err": "An unexpected error occurred while permanently deleting the tag.",
     "permanent_delete_tag_success": "Tag successfully deleted permanently.",
     "fetch_notes_unexpected_err": "An unexpected error occurred while loading notes.",
-    "fetch_todos_unexpected_err": "An unexpected error occurred while loading todos."
+    "fetch_todos_unexpected_err": "An unexpected error occurred while loading todos.",
+    "empty_trash_success": "The trash was emptied successfully.",
+    "empty_trash_unexpected_err": "An error occurred while emptying the trash."
   },
   "sidebar_navbar": {
     "home_page": "Home Page",
@@ -111,7 +113,10 @@
     "cancel": "Cancel",
     "empty_tab_notes": "No deleted notes.",
     "empty_tab_todos": "No deleted todos.",
-    "empty_tab_tags": "No deleted tags."
+    "empty_tab_tags": "No deleted tags.",
+    "empty_trash_button": "Empty Trash",
+    "empty_trash_confirmation_title": "Permanently Delete All?",
+    "empty_trash_confirmation_desc": "This action cannot be undone. All {itemCount} items in this section will be permanently deleted."
   },
   "todos": {
     "title": "Todos",

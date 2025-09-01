@@ -56,7 +56,9 @@
     "permanent_delete_tag_unexpected_err": "Etiket kalıcı olarak silinirken beklenmedik bir hata ile karşılaşıldı.",
     "permanent_delete_tag_success": "Etiket başarılı bir şekilde kalıcı olarak silindi.",
     "fetch_notes_unexpected_err": "Notlar yüklenirken beklenmedik bir hata ile karşılaşıldı.",
-    "fetch_todos_unexpected_err": "Yapılacaklar yüklenirken beklenmedik bir hata ile karşılaşıldı."
+    "fetch_todos_unexpected_err": "Yapılacaklar yüklenirken beklenmedik bir hata ile karşılaşıldı.",
+    "empty_trash_success": "Çöp kutusu başarıyla boşaltıldı.",
+    "empty_trash_unexpected_err": "Çöp kutusu boşaltılırken bir hata oluştu."
   },
   "sidebar_navbar": {
     "home_page": "Ana Sayfa",
@@ -111,7 +113,10 @@
     "cancel": "İptal",
     "empty_tab_notes": "Silinmiş not yok.",
     "empty_tab_todos": "Silinmiş görev yok.",
-    "empty_tab_tags": "Silinmiş etiket yok."
+    "empty_tab_tags": "Silinmiş etiket yok.",
+    "empty_trash_button": "Çöp Kutusunu Boşalt",
+    "empty_trash_confirmation_title": "Tümünü Kalıcı Olarak Sil?",
+    "empty_trash_confirmation_desc": "Bu işlem geri alınamaz. Bu bölümdeki ({itemCount} adet) tüm öğeler kalıcı olarak silinecektir."
   },
   "todos": {
     "title": "Yapılacaklar",
