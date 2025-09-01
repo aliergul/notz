@@ -54,7 +54,8 @@
     "soft_delete_tag_unexpected_err": "Etiket çöp kutusuna taşınırken beklenmedik bir hata ile karşılaşıldı.",
     "soft_delete_tag_success": "Etiket başarıyla çöp kutusuna taşındı.",
     "permanent_delete_tag_unexpected_err": "Etiket kalıcı olarak silinirken beklenmedik bir hata ile karşılaşıldı.",
-    "permanent_delete_tag_success": "Etiket başarılı bir şekilde kalıcı olarak silindi."
+    "permanent_delete_tag_success": "Etiket başarılı bir şekilde kalıcı olarak silindi.",
+    "fetch_notes_unexpected_err": "Notlar yüklenirken beklenmedik bir hata ile karşılaşıldı."
   },
   "sidebar_navbar": {
     "home_page": "Ana Sayfa",
@@ -92,7 +93,8 @@
     "filter_by_tag": "Etikete göre filtrele",
     "all_tags": "Tüm Etiketler",
     "back_to_notes": "Tüm Notlara Geri Dön",
-    "view_note_details": "Not detayına git"
+    "view_note_details": "Not detayına git",
+    "load_more_button": "Daha Fazla Yükle"
   },
   "trash": {
     "title": "Çöp Kutusu",

@@ -3,10 +3,10 @@ import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import NewNoteDialog from "@/components/notes/NewNoteDialog";
-import NoteCard from "@/components/notes/NoteCard";
-import NoteFilters from "@/components/notes/NoteFilters";
 import { Prisma } from "@prisma/client";
+import NewNoteDialog from "@/components/notes/NewNoteDialog";
+import NoteFilters from "@/components/notes/NoteFilters";
+import NoteList from "@/components/notes/NoteList";
 
 export const dynamic = "force-dynamic";
 
@@ -28,33 +28,22 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
 
   if (q) {
     whereCondition.OR = [
-      {
-        title: {
-          contains: q,
-          mode: "insensitive",
-        },
-      },
-      {
-        content: {
-          contains: q,
-          mode: "insensitive",
-        },
-      },
+      { title: { contains: q, mode: "insensitive" } },
+      { content: { contains: q, mode: "insensitive" } },
     ];
   }
-
   if (tag) {
-    whereCondition.tags = {
-      some: { id: tag },
-    };
+    whereCondition.tags = { some: { id: tag } };
   }
 
-  const [notes, allTags] = await Promise.all([
+  const [initialNotes, totalNotes, allTags] = await Promise.all([
     prisma.note.findMany({
       where: whereCondition,
       include: { tags: { where: { softDelete: false } } },
       orderBy: { updatedAt: "desc" },
+      take: 10,
     }),
+    prisma.note.count({ where: whereCondition }),
     prisma.tag.findMany({
       where: { userId: session.user.id, softDelete: false },
       orderBy: { createdAt: "desc" },
@@ -75,17 +64,11 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
       </div>
 
       <div className="flex-1">
-        {notes.length === 0 ? (
-          <div className="flex h-full items-center justify-center rounded-lg border border-dashed shadow-sm p-4">
-            <p className="text-muted-foreground">{t("empty_page")}</p>
-          </div>
-        ) : (
-          <div className="flex flex-col gap-2">
-            {notes.map((note) => (
-              <NoteCard key={note.id} note={note} allTags={allTags} />
-            ))}
-          </div>
-        )}
+        <NoteList
+          initialNotes={initialNotes}
+          totalNotes={totalNotes}
+          allTags={allTags}
+        />
       </div>
     </>
   );

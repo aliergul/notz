@@ -4,6 +4,9 @@ import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { Prisma } from "@prisma/client";
+
+const NOTES_PER_PAGE = 10;
 
 // Data Validation
 const noteSchema = z.object({
@@ -11,6 +14,52 @@ const noteSchema = z.object({
   content: z.string().min(1, "İçerik boş olamaz."),
   tagIds: z.array(z.string()).optional(),
 });
+
+// Note - Fetch
+export async function fetchNotes({
+  page = 1,
+  query,
+  tagId,
+}: {
+  page: number;
+  query?: string;
+  tagId?: string;
+}) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) return { error: "session_not_found", notes: [] };
+
+  const whereCondition: Prisma.NoteWhereInput = {
+    userId: session.user.id,
+    softDelete: false,
+  };
+
+  if (query) {
+    whereCondition.OR = [
+      { title: { contains: query, mode: "insensitive" } },
+      { content: { contains: query, mode: "insensitive" } },
+    ];
+  }
+
+  if (tagId) {
+    whereCondition.tags = {
+      some: { id: tagId },
+    };
+  }
+
+  try {
+    const notes = await prisma?.note.findMany({
+      where: whereCondition,
+      include: { tags: { where: { softDelete: false } } },
+      orderBy: { updatedAt: "desc" },
+      take: NOTES_PER_PAGE,
+      skip: (page - 1) * NOTES_PER_PAGE,
+    });
+    return { notes };
+  } catch (error) {
+    console.error("Error fetching notes:", error);
+    return { error: "fetch_notes_unexpected_err", notes: [] };
+  }
+}
 
 // Note - Create
 export async function createNote(formData: FormData) {

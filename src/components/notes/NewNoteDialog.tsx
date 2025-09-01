@@ -1,24 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import type { Tag } from "@prisma/client"; // YENİ: Tag tipini import ediyoruz
+import type { Tag } from "@prisma/client";
 import { useTranslations } from "next-intl";
-import { PlusCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { createNote } from "@/actions/notes";
 import ButtonSpinner from "../spinner";
+import { PlusCircle } from "lucide-react";
 import TagSelector from "../tags/TagSelector";
 
 interface NewNoteDialogProps {
@@ -28,6 +29,7 @@ interface NewNoteDialogProps {
 export default function NewNoteDialog({ allTags }: NewNoteDialogProps) {
   const t_notes = useTranslations("notes");
   const t_notify = useTranslations("notifications");
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -42,19 +44,22 @@ export default function NewNoteDialog({ allTags }: NewNoteDialogProps) {
 
     setIsLoading(false);
 
-    if (result.error) {
+    if (result?.error) {
       setError(t_notify(result.error as string));
     } else {
       setOpen(false);
+      router.refresh();
     }
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" className="ml-auto gap-1 cursor-pointer">
-          <PlusCircle className="h-4 w-4" />
-          {t_notes("create_note_button")}
+        <Button size="sm" className="gap-1 cursor-pointer">
+          <PlusCircle className="h-3.5 w-3.5" />
+          <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+            {t_notes("create_note_button")}
+          </span>
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
@@ -66,7 +71,7 @@ export default function NewNoteDialog({ allTags }: NewNoteDialogProps) {
         </DialogHeader>
         <form
           onSubmit={handleSubmit}
-          id="note-form"
+          id="new-note-form"
           className="grid gap-4 py-4"
         >
           <div className="grid grid-cols-4 items-center gap-4">
@@ -87,7 +92,9 @@ export default function NewNoteDialog({ allTags }: NewNoteDialogProps) {
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label className="text-right">{t_notes("tags_label")}</Label>
+            <Label htmlFor="tags" className="text-right">
+              {t_notes("tags_label")}
+            </Label>
             <div className="col-span-3">
               <TagSelector allTags={allTags} />
             </div>
@@ -101,7 +108,7 @@ export default function NewNoteDialog({ allTags }: NewNoteDialogProps) {
         <DialogFooter>
           <Button
             type="submit"
-            form="note-form"
+            form="new-note-form"
             disabled={isLoading}
             className="w-full cursor-pointer"
           >

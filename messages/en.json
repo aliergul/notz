@@ -54,7 +54,8 @@
     "soft_delete_tag_unexpected_err": "An unexpected error occurred while moving the tag to the trash.",
     "soft_delete_tag_success": "Tag successfully moved to the trash.",
     "permanent_delete_tag_unexpected_err": "An unexpected error occurred while permanently deleting the tag.",
-    "permanent_delete_tag_success": "Tag successfully deleted permanently."
+    "permanent_delete_tag_success": "Tag successfully deleted permanently.",
+    "fetch_notes_unexpected_err": "An unexpected error occurred while loading notes."
   },
   "sidebar_navbar": {
     "home_page": "Home Page",
@@ -92,7 +93,8 @@
     "filter_by_tag": "Filter by tag",
     "all_tags": "All Tags",
     "back_to_notes": "Back to All Notes",
-    "view_note_details": "View note details"
+    "view_note_details": "View note details",
+    "load_more_button": "Load More"
   },
   "trash": {
     "title": "Trash",
