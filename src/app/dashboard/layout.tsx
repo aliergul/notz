@@ -17,7 +17,9 @@ export default async function DashboardLayout({
 
   return (
     <div className="grid h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
-      <Sidebar user={session.user} />
+      <div className="hidden border-r bg-muted/40 md:block">
+        <Sidebar user={session.user} />
+      </div>
 
       <div className="flex flex-col overflow-hidden">
         <Header user={session.user} />

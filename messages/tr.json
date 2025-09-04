@@ -67,7 +67,8 @@
     "tags_page": "Etiketler",
     "trash_page": "Çöp Kutusu",
     "logout": "Çıkış Yap",
-    "profile": "Profil"
+    "profile": "Profil",
+    "navigation_menu": "Ana Menü"
   },
   "notes": {
     "empty_page": "Henüz hiç notunuz yok. 'Yeni Not' butonuna tıklayarak başlayın!",

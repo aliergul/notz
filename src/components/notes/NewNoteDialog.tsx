@@ -55,11 +55,9 @@ export default function NewNoteDialog({ allTags }: NewNoteDialogProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" className="gap-1 cursor-pointer">
-          <PlusCircle className="h-3.5 w-3.5" />
-          <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-            {t_notes("create_note_button")}
-          </span>
+        <Button size="sm" className="ml-auto gap-1 cursor-pointer">
+          <PlusCircle className="h-4 w-4" />
+          {t_notes("create_note_button")}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">

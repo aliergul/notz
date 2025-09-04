@@ -67,7 +67,8 @@
     "tags_page": "Tags",
     "trash_page": "Trash",
     "logout": "Logout",
-    "profile": "Profile"
+    "profile": "Profile",
+    "navigation_menu": "Main Menu"
   },
   "notes": {
     "empty_page": "You don't have any notes yet. Start by clicking the 'New Note' button!",
