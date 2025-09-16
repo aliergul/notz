@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import type { Tag } from "@prisma/client";
-import { useTranslations } from "next-intl";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import type { Tag } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -11,16 +11,16 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogFooter,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { createNote } from "@/actions/notes";
-import ButtonSpinner from "../spinner";
+import ButtonSpinner from "@/components/spinner";
+import TagSelector from "@/components/tags/TagSelector";
 import { PlusCircle } from "lucide-react";
-import TagSelector from "../tags/TagSelector";
 
 interface NewNoteDialogProps {
   allTags: Tag[];
@@ -30,26 +30,26 @@ export default function NewNoteDialog({ allTags }: NewNoteDialogProps) {
   const t_notes = useTranslations("notes");
   const t_notify = useTranslations("notifications");
   const router = useRouter();
+
   const [open, setOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setIsLoading(true);
     setError(null);
 
-    const formData = new FormData(event.currentTarget);
-    const result = await createNote(formData);
+    startTransition(async () => {
+      const formData = new FormData(event.currentTarget);
+      const result = await createNote(formData);
 
-    setIsLoading(false);
-
-    if (result?.error) {
-      setError(t_notify(result.error as string));
-    } else {
-      setOpen(false);
-      router.refresh();
-    }
+      if (result?.error) {
+        setError(t_notify(result.error as string));
+      } else {
+        setOpen(false);
+        router.refresh();
+      }
+    });
   };
 
   return (
@@ -107,10 +107,10 @@ export default function NewNoteDialog({ allTags }: NewNoteDialogProps) {
           <Button
             type="submit"
             form="new-note-form"
-            disabled={isLoading}
+            disabled={isPending}
             className="w-full cursor-pointer"
           >
-            {isLoading && <ButtonSpinner />}
+            {isPending && <ButtonSpinner />}
             {t_notes("note_save")}
           </Button>
         </DialogFooter>

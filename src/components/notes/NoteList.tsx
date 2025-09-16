@@ -1,14 +1,19 @@
 "use client";
 
 import { useState, useTransition, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import type { Note, Tag } from "@prisma/client";
-import { fetchNotes } from "@/actions/notes";
+import {
+  fetchNotes,
+  softDeleteNote,
+  permanentDeleteNote,
+} from "@/actions/notes";
 import NoteCard from "./NoteCard";
 import { Button } from "@/components/ui/button";
 import ButtonSpinner from "../spinner";
 import { useTranslations } from "next-intl";
 import { Plus } from "lucide-react";
+import { AnimatePresence } from "framer-motion";
 
 type NoteWithTags = Note & { tags: Tag[] };
 
@@ -24,14 +29,19 @@ export default function NoteList({
   allTags,
 }: NoteListProps) {
   const t = useTranslations("notes");
+  const router = useRouter();
   const searchParams = useSearchParams();
   const [notes, setNotes] = useState(initialNotes);
   const [page, setPage] = useState(1);
   const [isLoading, startTransition] = useTransition();
+  const [pendingDeletionNoteIds, setPendingDeletionNoteIds] = useState<
+    string[]
+  >([]);
 
   useEffect(() => {
     setNotes(initialNotes);
     setPage(1);
+    setPendingDeletionNoteIds([]);
     window.scrollTo(0, 0);
   }, [initialNotes]);
 
@@ -42,9 +52,7 @@ export default function NoteList({
       const nextPage = page + 1;
       const query = searchParams.get("q") || undefined;
       const tagId = searchParams.get("tag") || undefined;
-
       const result = await fetchNotes({ page: nextPage, query, tagId });
-
       if (result && Array.isArray(result.notes)) {
         setNotes((prevNotes) => [
           ...prevNotes,
@@ -53,6 +61,18 @@ export default function NoteList({
         setPage(nextPage);
       }
     });
+  };
+
+  const handleOptimisticDelete = async (
+    noteId: string,
+    isPermanent: boolean
+  ) => {
+    setPendingDeletionNoteIds((prev) => [...prev, noteId]);
+
+    const action = isPermanent ? permanentDeleteNote : softDeleteNote;
+    await action(noteId);
+
+    router.refresh();
   };
 
   if (notes.length === 0) {
@@ -66,12 +86,20 @@ export default function NoteList({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
-        {notes.map((note) => (
-          <NoteCard key={note.id} note={note} allTags={allTags} />
-        ))}
+        <AnimatePresence>
+          {notes.map((note) => (
+            <NoteCard
+              key={note.id}
+              note={note}
+              allTags={allTags}
+              onDelete={handleOptimisticDelete}
+              isPendingDeletion={pendingDeletionNoteIds.includes(note.id)}
+            />
+          ))}
+        </AnimatePresence>
       </div>
       {hasMoreNotes && (
-        <div className="flex justify-center mt-4">
+        <div className="flex justify-start mt-2">
           <Button
             onClick={loadMoreNotes}
             disabled={isLoading}
