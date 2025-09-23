@@ -38,11 +38,11 @@ export default async function TagsPage({ searchParams }: TagsPageProps) {
   });
 
   return (
-    <>
+    <div className="flex flex-col gap-4 h-full">
       <div className="flex items-center">
         <h1 className="text-lg font-semibold md:text-2xl">{t("title")}</h1>
       </div>
       <TagList initialTags={tags} />
-    </>
+    </div>
   );
 }

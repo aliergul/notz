@@ -40,7 +40,7 @@ export default function TagFilters() {
     <div className="flex items-center gap-4">
       <Input
         placeholder={t("search_placeholder")}
-        className="max-w-sm"
+        className="max-w-sm sm:w-md"
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
         disabled={isPending}

@@ -48,8 +48,10 @@ export default function TagList({ initialTags }: TagListProps) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center">
-        <TagFilters />
+      <div className="flex items-center ">
+        <div className="py-4">
+          <TagFilters />
+        </div>
         <div className="ml-auto">
           <NewTagDialog onActionStart={handleAction} />
         </div>
