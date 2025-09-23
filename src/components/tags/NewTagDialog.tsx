@@ -2,60 +2,73 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogFooter,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { createTag } from "@/actions/tags";
-import ButtonSpinner from "../spinner";
+import ButtonSpinner from "@/components/spinner";
+import { PlusCircle } from "lucide-react";
 
-export default function NewTagDialog() {
+interface NewTagDialogProps {
+  onActionStart: (action: () => Promise<void>) => void;
+}
+
+export default function NewTagDialog({ onActionStart }: NewTagDialogProps) {
   const t = useTranslations("tags");
   const t_notify = useTranslations("notifications");
   const [open, setOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setIsLoading(true);
     setError(null);
+    setIsSubmitting(true);
 
-    const formData = new FormData(event.currentTarget);
-    const result = await createTag(formData);
-    setIsLoading(false);
-
-    if (result.error) {
-      setError(t_notify(result.error as string));
-    } else {
-      setOpen(false);
-    }
+    onActionStart(async () => {
+      try {
+        const formData = new FormData(event.currentTarget);
+        const result = await createTag(formData);
+        if (result?.error) {
+          setError(t_notify(result.error as string));
+          setIsSubmitting(false);
+          throw new Error(result.error);
+        } else {
+          setOpen(false);
+          setIsSubmitting(false);
+        }
+      } catch {}
+    });
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" className="ml-auto gap-1 cursor-pointer">
+        <Button size="sm" className="gap-1 cursor-pointer">
           <PlusCircle className="h-4 w-4" />
           {t("new_tag_button")}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>{t("new_tag_dialog_title")}</DialogTitle>
           <DialogDescription>{t("new_tag_dialog_desc")}</DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} id="tag-form" className="grid gap-4 py-4">
+        <form
+          onSubmit={handleSubmit}
+          id="new-tag-form"
+          className="grid gap-4 py-4"
+        >
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="name" className="text-right">
               {t("name_label")}
@@ -81,7 +94,7 @@ export default function NewTagDialog() {
               name="color"
               type="color"
               defaultValue="#888888"
-              className="col-span-3 p-1"
+              className="col-span-3 p-1 h-10 w-full"
             />
           </div>
           {error && (
@@ -93,11 +106,11 @@ export default function NewTagDialog() {
         <DialogFooter>
           <Button
             type="submit"
-            form="tag-form"
-            disabled={isLoading}
+            form="new-tag-form"
+            disabled={isSubmitting}
             className="w-full cursor-pointer"
           >
-            {isLoading && <ButtonSpinner />}
+            {isSubmitting && <ButtonSpinner />}
             {t("save_button")}
           </Button>
         </DialogFooter>

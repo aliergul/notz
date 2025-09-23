@@ -2,9 +2,8 @@
 
 import { useState } from "react";
 import type { Tag } from "@prisma/client";
-import { useTranslations } from "next-intl";
 import { Pencil, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useTranslations } from "next-intl";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,64 +15,92 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { softDeleteTag, permanentDeleteTag } from "@/actions/tags";
 import EditTagDialog from "./EditTagDialog";
-import ButtonSpinner from "../spinner";
 import clsx from "clsx";
+import { motion } from "framer-motion";
+import ButtonSpinner from "@/components/spinner";
 
 interface TagCardProps {
   tag: Tag;
+  onDelete: (tagId: string, isPermanent: boolean) => void;
+  onActionStart: (action: () => Promise<void>) => void;
+  isPendingDeletion?: boolean;
 }
 
-export default function TagCard({ tag }: TagCardProps) {
+export default function TagCard({
+  tag,
+  onDelete,
+  onActionStart,
+  isPendingDeletion,
+}: TagCardProps) {
   const t = useTranslations("tags");
-  const [isDeleting, setIsDeleting] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [isPermanentDelete, setIsPermanentDelete] = useState(false);
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
 
   const handleDelete = async () => {
     setIsDeleting(true);
-    if (isPermanentDelete) {
-      await permanentDeleteTag(tag.id);
-    } else {
-      await softDeleteTag(tag.id);
+    await onDelete(tag.id, isPermanentDelete);
+  };
+
+  const handleAlertOpenChange = (open: boolean) => {
+    if (!open) {
+      setIsPermanentDelete(false);
     }
-    setIsDeleting(false);
+    setIsAlertOpen(open);
   };
 
   return (
-    <>
+    <motion.div
+      layout
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{
+        opacity: 0,
+        height: 0,
+        marginBottom: 0,
+        paddingTop: 0,
+        paddingBottom: 0,
+        border: 0,
+      }}
+      transition={{ duration: 0.3 }}
+      className="relative"
+    >
+      {isPendingDeletion && (
+        <div className="absolute inset-0 z-30 flex items-center justify-center rounded-lg backdrop-blur-xs"></div>
+      )}
       <div className="flex items-center justify-between rounded-lg border bg-card p-4">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           <div
             className="h-4 w-4 rounded-full"
             style={{ backgroundColor: tag.color || "#888888" }}
           />
-          <div>
-            <p className="font-semibold">{tag.name}</p>
+          <div className="flex flex-col">
+            <h3 className="font-semibold">{tag.name}</h3>
             {tag.description && (
               <p className="text-sm text-muted-foreground">{tag.description}</p>
             )}
           </div>
         </div>
-
         <div className="flex items-center gap-2">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => setIsEditOpen(true)}
-            className="cursor-pointer"
+            className="h-8 w-8 cursor-pointer"
           >
             <Pencil className="h-4 w-4" />
           </Button>
-          <AlertDialog>
+          <AlertDialog open={isAlertOpen} onOpenChange={handleAlertOpenChange}>
             <AlertDialogTrigger asChild>
               <Button
                 variant="ghost"
                 size="icon"
-                className="text-red-500 hover:text-red-600 cursor-pointer"
+                className="h-8 w-8 cursor-pointer hover:text-red-500"
               >
                 <Trash2 className="h-4 w-4" />
               </Button>
@@ -120,7 +147,12 @@ export default function TagCard({ tag }: TagCardProps) {
         </div>
       </div>
 
-      <EditTagDialog tag={tag} open={isEditOpen} onOpenChange={setIsEditOpen} />
-    </>
+      <EditTagDialog
+        tag={tag}
+        open={isEditOpen}
+        onOpenChange={setIsEditOpen}
+        onActionStart={onActionStart}
+      />
+    </motion.div>
   );
 }

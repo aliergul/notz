@@ -89,7 +89,7 @@ export default function TodoCard({
       className="relative"
     >
       {isPendingDeletion && (
-        <div className="absolute inset-0 z-30 flex items-center justify-center rounded-lg  backdrop-blur-xs"></div>
+        <div className="absolute inset-0 z-30 flex items-center justify-center rounded-lg backdrop-blur-xs"></div>
       )}
       <div className="group relative flex items-center justify-between rounded-lg border bg-card p-3 transition-colors hover:bg-muted w-full">
         <div className="flex-1 min-w-0">
