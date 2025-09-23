@@ -1,5 +1,5 @@
-import DashboardSkeleton from "@/components/dashboard/DashboardSkeleton";
+import TodoBoardSkeleton from "@/components/dashboard/TodoBoardSkeleton";
 
 export default function Loading() {
-  return <DashboardSkeleton />;
+  return <TodoBoardSkeleton />;
 }

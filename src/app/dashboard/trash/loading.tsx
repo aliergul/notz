@@ -1,5 +1,5 @@
-import DashboardSkeleton from "@/components/dashboard/DashboardSkeleton";
+import TrashPageSkeleton from "@/components/dashboard/TrashPageSkeleton";
 
 export default function Loading() {
-  return <DashboardSkeleton />;
+  return <TrashPageSkeleton />;
 }
