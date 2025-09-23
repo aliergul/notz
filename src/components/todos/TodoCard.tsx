@@ -19,9 +19,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { permanentDeleteTodo, softDeleteTodo } from "@/actions/todos";
-import EditTodoDialog from "./EditTodoDialog";
-import ButtonSpinner from "@/components/spinner";
+import EditTodoDialog from "@/components/todos/EditTodoDialog";
 import clsx from "clsx";
 import {
   Tooltip,
@@ -30,12 +28,16 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
+import ButtonSpinner from "@/components/spinner";
+import { motion } from "framer-motion";
 
 type TodoWithTags = Todo & { tags: Tag[] };
 
 interface TodoCardProps {
   todo: TodoWithTags;
   allTags: Tag[];
+  onDelete: (todoId: string, isPermanent: boolean) => void;
+  isPendingDeletion?: boolean;
 }
 
 const priorityColors = {
@@ -45,7 +47,12 @@ const priorityColors = {
   URGENT: "text-red-500",
 };
 
-export default function TodoCard({ todo, allTags }: TodoCardProps) {
+export default function TodoCard({
+  todo,
+  allTags,
+  onDelete,
+  isPendingDeletion,
+}: TodoCardProps) {
   const t = useTranslations("todos");
   const format = useFormatter();
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -55,13 +62,7 @@ export default function TodoCard({ todo, allTags }: TodoCardProps) {
 
   const handleDelete = async () => {
     setIsDeleting(true);
-    if (isPermanentDelete) {
-      await permanentDeleteTodo(todo.id);
-    } else {
-      await softDeleteTodo(todo.id);
-    }
-    setIsDeleting(false);
-    setIsAlertOpen(false);
+    await onDelete(todo.id, isPermanentDelete);
   };
 
   const handleAlertOpenChange = (open: boolean) => {
@@ -72,133 +73,145 @@ export default function TodoCard({ todo, allTags }: TodoCardProps) {
   };
 
   return (
-    <>
-      <TooltipProvider>
-        <div className="group relative flex items-center justify-between rounded-lg border bg-card p-3 transition-colors hover:bg-muted w-full">
-          <div className="flex-1 min-w-0">
-            <div className="truncate font-medium">{todo.title}</div>
-            <div className="flex items-center gap-3 text-xs text-muted-foreground mt-2 flex-wrap min-h-6">
-              {todo.priority && (
-                <div className="flex items-center gap-1">
-                  <Flag
-                    className={`h-3 w-3 ${priorityColors[todo.priority]}`}
-                  />
-                  <span>
-                    {t(`priority_${todo.priority.toLowerCase()}` as string)}
-                  </span>
-                </div>
-              )}
-              {todo.dueDate ? (
-                <div className="flex items-center gap-1">
-                  <Calendar className="h-3 w-3" />
-                  <span>
-                    {format.dateTime(todo.dueDate, {
-                      month: "short",
-                      day: "numeric",
-                    })}
-                  </span>
-                </div>
-              ) : (
-                <div className="flex items-center gap-1">
-                  <Calendar className="h-3 w-3" />
-                  <span>-</span>
-                </div>
-              )}
-              {todo.tags.length > 0 ? (
-                <>
-                  {todo.tags.slice(0, 3).map((tag) => (
-                    <Badge
-                      key={tag.id}
-                      variant="outline"
-                      className="text-xs"
-                      style={{
-                        borderColor: tag.color || undefined,
-                        color: tag.color || undefined,
-                      }}
-                    >
-                      {tag.name}
-                    </Badge>
-                  ))}
-                  {todo.tags.length > 3 && (
-                    <Badge variant="secondary" className="text-xs">
-                      +{todo.tags.length - 3}
-                    </Badge>
-                  )}
-                </>
-              ) : (
-                <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <TagIcon className="h-3 w-3" />
-                  <span>0</span>
-                </div>
-              )}
-            </div>
+    <motion.div
+      layout
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{
+        opacity: 0,
+        height: 0,
+        marginBottom: 0,
+        paddingTop: 0,
+        paddingBottom: 0,
+        border: 0,
+      }}
+      transition={{ duration: 0.3 }}
+      className="relative"
+    >
+      {isPendingDeletion && (
+        <div className="absolute inset-0 z-30 flex items-center justify-center rounded-lg  backdrop-blur-xs"></div>
+      )}
+      <div className="group relative flex items-center justify-between rounded-lg border bg-card p-3 transition-colors hover:bg-muted w-full">
+        <div className="flex-1 min-w-0">
+          <div className="truncate font-medium">{todo.title}</div>
+          <div className="flex items-center gap-3 text-xs text-muted-foreground mt-2 flex-wrap min-h-6">
+            {todo.priority && (
+              <div className="flex items-center gap-1">
+                <Flag className={`h-3 w-3 ${priorityColors[todo.priority]}`} />
+                <span>
+                  {t(`priority_${todo.priority.toLowerCase()}` as string)}
+                </span>
+              </div>
+            )}
+            {todo.dueDate ? (
+              <div className="flex items-center gap-1">
+                <Calendar className="h-3 w-3" />
+                <span>
+                  {format.dateTime(todo.dueDate, {
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-1">
+                <Calendar className="h-3 w-3" />
+                <span>-</span>
+              </div>
+            )}
+            {todo.tags.length > 0 ? (
+              <>
+                {todo.tags.slice(0, 3).map((tag) => (
+                  <Badge
+                    key={tag.id}
+                    variant="outline"
+                    className="text-xs"
+                    style={{
+                      borderColor: tag.color || undefined,
+                      color: tag.color || undefined,
+                    }}
+                  >
+                    {tag.name}
+                  </Badge>
+                ))}
+                {todo.tags.length > 3 && (
+                  <Badge variant="secondary" className="text-xs">
+                    +{todo.tags.length - 3}
+                  </Badge>
+                )}
+              </>
+            ) : (
+              <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                <TagIcon className="h-3 w-3" />
+                <span>0</span>
+              </div>
+            )}
           </div>
+        </div>
 
-          <div className="relative z-20 flex items-center gap-2 ml-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-7 w-7 cursor-pointer text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity"
-              onClick={() => setIsEditOpen(true)}
-            >
-              <Pencil className="h-3 w-3" />
-            </Button>
-            <AlertDialog
-              open={isAlertOpen}
-              onOpenChange={handleAlertOpenChange}
-            >
-              <AlertDialogTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-7 w-7 cursor-pointer text-muted-foreground hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
+        <div className="relative z-20 flex items-center gap-2 ml-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-7 w-7 cursor-pointer text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity"
+            onClick={() => setIsEditOpen(true)}
+          >
+            <Pencil className="h-3 w-3" />
+          </Button>
+          <AlertDialog open={isAlertOpen} onOpenChange={handleAlertOpenChange}>
+            <AlertDialogTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7 cursor-pointer text-muted-foreground hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
+              >
+                <Trash2 className="h-3 w-3" />
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  {t("delete_todo_confirmation_title")}
+                </AlertDialogTitle>
+                <AlertDialogDescription
+                  className={clsx(isPermanentDelete ? "line-through" : "")}
                 >
-                  <Trash2 className="h-3 w-3" />
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>
-                    {t("delete_todo_confirmation_title")}
-                  </AlertDialogTitle>
-                  <AlertDialogDescription
-                    className={clsx(isPermanentDelete ? "line-through" : "")}
-                  >
-                    {t("delete_todo_confirmation_desc")}
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <div className="flex items-center space-x-2 my-4">
-                  <Checkbox
-                    id={`permanent-delete-${todo.id}`}
-                    className="cursor-pointer"
-                    checked={isPermanentDelete}
-                    onCheckedChange={(checked) =>
-                      setIsPermanentDelete(Boolean(checked))
-                    }
-                  />
-                  <Label
-                    htmlFor={`permanent-delete-${todo.id}`}
-                    className="text-sm font-medium leading-none text-red-600 cursor-pointer"
-                  >
-                    {t("permanent_delete_checkbox")}
-                  </Label>
-                </div>
-                <AlertDialogFooter>
-                  <AlertDialogCancel className="cursor-pointer">
-                    {t("cancel")}
-                  </AlertDialogCancel>
-                  <AlertDialogAction
-                    onClick={handleDelete}
-                    disabled={isDeleting}
-                    className="cursor-pointer"
-                  >
-                    {isDeleting && <ButtonSpinner />} {t("delete")}
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          </div>
+                  {t("delete_todo_confirmation_desc")}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <div className="flex items-center space-x-2 my-4">
+                <Checkbox
+                  id={`permanent-delete-${todo.id}`}
+                  className="cursor-pointer"
+                  checked={isPermanentDelete}
+                  onCheckedChange={(checked) =>
+                    setIsPermanentDelete(Boolean(checked))
+                  }
+                />
+                <Label
+                  htmlFor={`permanent-delete-${todo.id}`}
+                  className="text-sm font-medium leading-none text-red-600 cursor-pointer"
+                >
+                  {t("permanent_delete_checkbox")}
+                </Label>
+              </div>
+              <AlertDialogFooter>
+                <AlertDialogCancel className="cursor-pointer">
+                  {t("cancel")}
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={handleDelete}
+                  disabled={isDeleting}
+                  className="cursor-pointer"
+                >
+                  {isDeleting && <ButtonSpinner />} {t("delete")}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
 
+        <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
@@ -212,15 +225,14 @@ export default function TodoCard({ todo, allTags }: TodoCardProps) {
               <p>{t("view_todo_details")}</p>
             </TooltipContent>
           </Tooltip>
-        </div>
-      </TooltipProvider>
-
+        </TooltipProvider>
+      </div>
       <EditTodoDialog
         todo={todo}
         allTags={allTags}
         open={isEditOpen}
         onOpenChange={setIsEditOpen}
       />
-    </>
+    </motion.div>
   );
 }

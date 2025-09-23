@@ -2,10 +2,14 @@
 
 import { useState, useTransition, useEffect } from "react";
 import { type Todo, type Tag, TodoStatus } from "@prisma/client";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { fetchTodos } from "@/actions/todos";
-import TodoCard from "./TodoCard";
+import {
+  fetchTodos,
+  softDeleteTodo,
+  permanentDeleteTodo,
+} from "@/actions/todos";
+import TodoCard from "@/components/todos/TodoCard";
 import {
   Circle,
   CircleDotDashed,
@@ -14,8 +18,9 @@ import {
   Plus,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "../ui/button";
-import ButtonSpinner from "../spinner";
+import { Button } from "@/components/ui/button";
+import ButtonSpinner from "@/components/spinner";
+import { AnimatePresence } from "framer-motion";
 
 type TodoWithTags = Todo & { tags: Tag[] };
 
@@ -55,6 +60,7 @@ export default function TodoBoard({
   allTags,
 }: TodoBoardProps) {
   const t = useTranslations("todos");
+  const router = useRouter();
   const searchParams = useSearchParams();
 
   const [columnsData, setColumnsData] =
@@ -65,12 +71,25 @@ export default function TodoBoard({
     DONE: 1,
   });
   const [isLoading, startTransition] = useTransition();
+  const [pendingDeletionTodoIds, setPendingDeletionTodoIds] = useState<
+    string[]
+  >([]);
 
   useEffect(() => {
     setColumnsData(initialColumnsData);
     setPages({ NOT_STARTED: 1, IN_PROGRESS: 1, DONE: 1 });
+    setPendingDeletionTodoIds([]);
     window.scrollTo(0, 0);
   }, [initialColumnsData]);
+
+  const handleOptimisticDelete = (todoId: string, isPermanent: boolean) => {
+    startTransition(async () => {
+      setPendingDeletionTodoIds((prev) => [...prev, todoId]);
+      const action = isPermanent ? permanentDeleteTodo : softDeleteTodo;
+      await action(todoId);
+      router.refresh();
+    });
+  };
 
   const loadMore = (status: TodoStatus) => {
     startTransition(async () => {
@@ -112,7 +131,7 @@ export default function TodoBoard({
         const hasMore = column.tasks.length < column.total;
 
         return (
-          <div key={status} className="flex flex-col gap-4 mb-2">
+          <div key={status} className="flex flex-col gap-4">
             <div className="flex items-center gap-2">
               <config.icon className={`h-5 w-5 ${config.color}`} />
               <h2 className="text-lg font-semibold tracking-tight">
@@ -132,9 +151,19 @@ export default function TodoBoard({
                   </p>
                 </div>
               ) : (
-                column.tasks.map((todo) => (
-                  <TodoCard key={todo.id} todo={todo} allTags={allTags} />
-                ))
+                <AnimatePresence>
+                  {column.tasks.map((todo) => (
+                    <TodoCard
+                      key={todo.id}
+                      todo={todo}
+                      allTags={allTags}
+                      onDelete={handleOptimisticDelete}
+                      isPendingDeletion={pendingDeletionTodoIds.includes(
+                        todo.id
+                      )}
+                    />
+                  ))}
+                </AnimatePresence>
               )}
               {hasMore && (
                 <Button
@@ -142,7 +171,7 @@ export default function TodoBoard({
                   disabled={isLoading}
                   variant="ghost"
                   size="sm"
-                  className="text-muted-foreground cursor-pointer"
+                  className="mt-2 text-muted-foreground cursor-pointer"
                 >
                   {isLoading ? (
                     <ButtonSpinner className="text-muted-foreground" />
