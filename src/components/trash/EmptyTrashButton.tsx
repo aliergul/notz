@@ -1,7 +1,9 @@
 "use client";
 
-import { useTransition } from "react";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { emptyTrashByType } from "@/actions/trash";
+import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,27 +15,46 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import ButtonSpinner from "../spinner";
-import { ItemType, emptyTrashByType } from "@/actions/trash";
+import ButtonSpinner from "@/components/spinner";
+import { Trash2 } from "lucide-react";
+
+type ItemType = "note" | "todo" | "tag";
 
 interface EmptyTrashButtonProps {
   type: ItemType;
   itemCount: number;
+  onActionStart: (action: () => Promise<void>) => void;
 }
 
 export default function EmptyTrashButton({
   type,
   itemCount,
+  onActionStart,
 }: EmptyTrashButtonProps) {
   const t = useTranslations("trash");
-  const [isLoading, startTransition] = useTransition();
+  const t_notify = useTranslations("notifications");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleEmptyTrash = () => {
-    startTransition(async () => {
-      await emptyTrashByType(type);
+  const handleEmptyTrash = async () => {
+    setError(null);
+    setIsSubmitting(true);
+
+    onActionStart(async () => {
+      try {
+        const result = await emptyTrashByType(type);
+        if (result?.error) {
+          setError(t_notify(result.error as string));
+          setIsSubmitting(false);
+          throw new Error(result.error);
+        }
+      } catch {}
     });
   };
+
+  if (itemCount === 0) {
+    return null;
+  }
 
   return (
     <AlertDialog>
@@ -41,9 +62,9 @@ export default function EmptyTrashButton({
         <Button
           variant="destructive"
           size="sm"
-          disabled={itemCount === 0 || isLoading}
-          className="cursor-pointer"
+          className="gap-1 cursor-pointer w-fit"
         >
+          <Trash2 className="h-4 w-4" />
           {t("empty_trash_button")}
         </Button>
       </AlertDialogTrigger>
@@ -56,16 +77,22 @@ export default function EmptyTrashButton({
             {t("empty_trash_confirmation_desc", { itemCount })}
           </AlertDialogDescription>
         </AlertDialogHeader>
+        {error && (
+          <p className="text-center text-sm font-medium text-red-500">
+            {error}
+          </p>
+        )}
         <AlertDialogFooter>
           <AlertDialogCancel className="cursor-pointer">
             {t("cancel")}
           </AlertDialogCancel>
           <AlertDialogAction
             onClick={handleEmptyTrash}
-            disabled={isLoading}
+            disabled={isSubmitting}
             className="cursor-pointer"
           >
-            {isLoading && <ButtonSpinner />} {t("delete_permanently")}
+            {isSubmitting && <ButtonSpinner />}
+            {t("delete_permanently")}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

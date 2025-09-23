@@ -1,106 +1,89 @@
 "use client";
 
-import { useState } from "react";
 import type { Note, Tag, Todo } from "@prisma/client";
 import { useFormatter, useTranslations } from "next-intl";
+import { permanentDeleteItem, restoreItem } from "@/actions/trash";
 import { Button } from "@/components/ui/button";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { restoreItem, permanentDeleteItem } from "@/actions/trash";
-import { RotateCw, Trash2 } from "lucide-react";
-import ButtonSpinner from "../spinner";
+import { motion } from "framer-motion";
+import clsx from "clsx";
 
 type ItemType = "note" | "todo" | "tag";
 
 interface TrashItemCardProps {
   item: Note | Todo | Tag;
   type: ItemType;
+  isPending: boolean;
+  onActionStart: (itemId: string, action: () => Promise<void>) => void;
 }
 
-export default function TrashItemCard({ item, type }: TrashItemCardProps) {
+export default function TrashItemCard({
+  item,
+  type,
+  isPending,
+  onActionStart,
+}: TrashItemCardProps) {
+  const displayName = "title" in item ? item.title : item.name;
   const t = useTranslations("trash");
   const format = useFormatter();
-  const [isRestoring, setIsRestoring] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
-
-  const displayName = "title" in item ? item.title : item.name;
-
-  const handleRestore = async () => {
-    setIsRestoring(true);
-    await restoreItem(item.id, type);
-    setIsRestoring(false);
-  };
-
-  const handleDelete = async () => {
-    setIsDeleting(true);
-    await permanentDeleteItem(item.id, type);
-    setIsDeleting(false);
-  };
 
   return (
-    <div className="flex items-center justify-between rounded-lg border p-4">
-      <div>
-        <p className="font-semibold">{displayName}</p>
-        <p className="text-sm text-muted-foreground">
-          {t("delete_date")}:{" "}
-          {format.dateTime(new Date(item.updatedAt), {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
-        </p>
+    <motion.div
+      layout
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, x: -50 }}
+      transition={{ duration: 0.2 }}
+      className="relative"
+    >
+      {isPending && (
+        <div className="absolute inset-0 z-30 flex items-center justify-center rounded-lg backdrop-blur-xs"></div>
+      )}
+      <div
+        className={clsx(
+          "flex items-center justify-between rounded-lg border p-4 transition-opacity",
+          isPending && "opacity-50"
+        )}
+      >
+        <div>
+          <p className="font-semibold">{displayName}</p>
+          <p className="text-sm text-muted-foreground">
+            {t("delete_date")}:{" "}
+            {format.dateTime(new Date(item.updatedAt), {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <Button
+            size="sm"
+            variant="outline"
+            className="cursor-pointer"
+            onClick={() =>
+              onActionStart(item.id, async () => {
+                await restoreItem(item.id, type);
+              })
+            }
+            disabled={isPending}
+          >
+            {t("restore")}
+          </Button>
+          <Button
+            size="sm"
+            variant="destructive"
+            className="cursor-pointer"
+            onClick={() =>
+              onActionStart(item.id, async () => {
+                await permanentDeleteItem(item.id, type);
+              })
+            }
+            disabled={isPending}
+          >
+            {t("delete_permanently")}
+          </Button>
+        </div>
       </div>
-      <div className="flex gap-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handleRestore}
-          disabled={isRestoring}
-          className="cursor-pointer"
-        >
-          <RotateCw className="mr-2 h-4 w-4" />
-          {t("restore")}
-        </Button>
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant="destructive" size="sm" className="cursor-pointer">
-              <Trash2 className="mr-2 h-4 w-4" />
-              {t("delete_permanently")}
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>
-                {t("permanent_delete_confirmation_title")}
-              </AlertDialogTitle>
-              <AlertDialogDescription>
-                {t("permanent_delete_confirmation_desc")}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel className="cursor-pointer">
-                {t("cancel")}
-              </AlertDialogCancel>
-              <AlertDialogAction
-                onClick={handleDelete}
-                disabled={isDeleting}
-                className="cursor-pointer"
-              >
-                {isDeleting && <ButtonSpinner />} {t("delete_permanently")}
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </div>
-    </div>
+    </motion.div>
   );
 }
