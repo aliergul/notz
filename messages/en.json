@@ -58,7 +58,8 @@
     "fetch_notes_unexpected_err": "An unexpected error occurred while loading notes.",
     "fetch_todos_unexpected_err": "An unexpected error occurred while loading todos.",
     "empty_trash_success": "The trash was emptied successfully.",
-    "empty_trash_unexpected_err": "An error occurred while emptying the trash."
+    "empty_trash_unexpected_err": "An error occurred while emptying the trash.",
+    "update_todo_status_by_drag_success": "Task status updated successfully."
   },
   "sidebar_navbar": {
     "home_page": "Home Page",

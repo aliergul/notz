@@ -215,3 +215,36 @@ export async function permanentDeleteTodo(todoId: string) {
   revalidatePath("/dashboard/trash");
   return { success: "permanent_delete_todo_success" };
 }
+
+// Todo - Update by Drag
+export async function updateTodoStatusByDrag(
+  todoId: string,
+  newStatus: TodoStatus
+) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) return { error: "session_not_found" };
+
+  try {
+    const todo = await prisma?.todo.findFirst({
+      where: { id: todoId, userId: session.user.id },
+    });
+
+    if (!todo) {
+      return { error: "not_found_or_unauthorized" };
+    }
+
+    await prisma?.todo.update({
+      where: {
+        id: todoId,
+      },
+      data: {
+        status: newStatus,
+      },
+    });
+  } catch (error) {
+    console.error("Unexpected error during drag and drop update:", error);
+    return { error: "update_todo_unexpected_err" };
+  }
+
+  return { success: "update_todo_success" };
+}

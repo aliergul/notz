@@ -19,7 +19,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import EditTodoDialog from "@/components/todos/EditTodoDialog";
+import EditTodoDialog from "./EditTodoDialog";
 import clsx from "clsx";
 import {
   Tooltip,
@@ -30,6 +30,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import ButtonSpinner from "@/components/spinner";
 import { motion } from "framer-motion";
+import { useDraggable } from "@dnd-kit/core";
+import { CSS } from "@dnd-kit/utilities";
 
 type TodoWithTags = Todo & { tags: Tag[] };
 
@@ -60,6 +62,17 @@ export default function TodoCard({
   const [isPermanentDelete, setIsPermanentDelete] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
 
+  const { attributes, listeners, setNodeRef, transform, isDragging } =
+    useDraggable({
+      id: todo.id,
+      data: { todo },
+    });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    zIndex: isDragging ? 10 : undefined,
+  };
+
   const handleDelete = async () => {
     setIsDeleting(true);
     await onDelete(todo.id, isPermanentDelete);
@@ -74,6 +87,10 @@ export default function TodoCard({
 
   return (
     <motion.div
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
       layout
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -86,12 +103,18 @@ export default function TodoCard({
         border: 0,
       }}
       transition={{ duration: 0.3 }}
-      className="relative"
+      className="relative touch-none"
     >
       {isPendingDeletion && (
         <div className="absolute inset-0 z-30 flex items-center justify-center rounded-lg backdrop-blur-xs"></div>
       )}
-      <div className="group relative flex items-center justify-between rounded-lg border bg-card p-3 transition-colors hover:bg-muted w-full">
+
+      <div
+        className={clsx(
+          "group relative flex items-center justify-between rounded-lg border bg-card p-3 transition-colors hover:bg-muted w-full",
+          isDragging && "shadow-lg"
+        )}
+      >
         <div className="flex-1 min-w-0">
           <div className="truncate font-medium">{todo.title}</div>
           <div className="flex items-center gap-3 text-xs text-muted-foreground mt-2 flex-wrap min-h-6">

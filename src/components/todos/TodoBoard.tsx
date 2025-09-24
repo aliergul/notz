@@ -8,8 +8,9 @@ import {
   fetchTodos,
   softDeleteTodo,
   permanentDeleteTodo,
+  updateTodoStatusByDrag,
 } from "@/actions/todos";
-import TodoCard from "@/components/todos/TodoCard";
+import TodoCard from "./TodoCard";
 import {
   Circle,
   CircleDotDashed,
@@ -19,8 +20,18 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import ButtonSpinner from "@/components/spinner";
+import ButtonSpinner from "../spinner";
 import { AnimatePresence } from "framer-motion";
+import {
+  DndContext,
+  DragEndEvent,
+  DragStartEvent,
+  DragOverlay,
+  useDroppable,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
 
 type TodoWithTags = Todo & { tags: Tag[] };
 
@@ -55,6 +66,21 @@ const statusConfig: Record<
   },
 };
 
+function DroppableColumn({
+  status,
+  children,
+}: {
+  status: TodoStatus;
+  children: React.ReactNode;
+}) {
+  const { setNodeRef } = useDroppable({ id: status });
+  return (
+    <div ref={setNodeRef} className="flex flex-col gap-4">
+      {children}
+    </div>
+  );
+}
+
 export default function TodoBoard({
   initialColumnsData,
   allTags,
@@ -70,10 +96,20 @@ export default function TodoBoard({
     IN_PROGRESS: 1,
     DONE: 1,
   });
-  const [isLoading, startTransition] = useTransition();
+  const [isPending, startTransition] = useTransition();
   const [pendingDeletionTodoIds, setPendingDeletionTodoIds] = useState<
     string[]
   >([]);
+
+  const [activeTodo, setActiveTodo] = useState<TodoWithTags | null>(null);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    })
+  );
 
   useEffect(() => {
     setColumnsData(initialColumnsData);
@@ -81,6 +117,59 @@ export default function TodoBoard({
     setPendingDeletionTodoIds([]);
     window.scrollTo(0, 0);
   }, [initialColumnsData]);
+
+  const handleDragStart = (event: DragStartEvent) => {
+    const { active } = event;
+    const todo = active.data.current?.todo as TodoWithTags;
+    setActiveTodo(todo);
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    setActiveTodo(null);
+    const { active, over } = event;
+
+    if (!over) return;
+
+    const activeId = active.id.toString();
+    const overId = over.id.toString() as TodoStatus;
+
+    let draggedTodo: TodoWithTags | undefined;
+    let startColumn: TodoStatus | undefined;
+
+    Object.entries(columnsData).forEach(([status, column]) => {
+      const found = column.tasks.find((task) => task.id === activeId);
+      if (found) {
+        draggedTodo = found;
+        startColumn = status as TodoStatus;
+      }
+    });
+
+    const endColumn = overId;
+
+    if (!draggedTodo || !startColumn || startColumn === endColumn) {
+      return;
+    }
+
+    startTransition(() => {
+      setColumnsData((prev) => {
+        const newColumns = { ...prev };
+        newColumns[startColumn!].tasks = newColumns[startColumn!].tasks.filter(
+          (task) => task.id !== activeId
+        );
+        newColumns[endColumn].tasks.unshift({
+          ...draggedTodo!,
+          status: endColumn,
+        });
+        return newColumns;
+      });
+
+      updateTodoStatusByDrag(activeId, endColumn).then((result) => {
+        if (result?.error) {
+          router.refresh();
+        }
+      });
+    });
+  };
 
   const handleOptimisticDelete = (todoId: string, isPermanent: boolean) => {
     startTransition(async () => {
@@ -124,69 +213,84 @@ export default function TodoBoard({
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
-      {columnsOrder.map((status) => {
-        const column = columnsData[status];
-        const config = statusConfig[status];
-        const hasMore = column.tasks.length < column.total;
+    <DndContext
+      sensors={sensors}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+    >
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+        {columnsOrder.map((status) => {
+          const column = columnsData[status];
+          const config = statusConfig[status];
+          const hasMore = column.tasks.length < column.total;
 
-        return (
-          <div key={status} className="flex flex-col gap-4">
-            <div className="flex items-center gap-2">
-              <config.icon className={`h-5 w-5 ${config.color}`} />
-              <h2 className="text-lg font-semibold tracking-tight">
-                {t(`status_${status.toLowerCase()}` as string)} ({column.total})
-              </h2>
-            </div>
-            <div
-              className={cn(
-                "flex flex-1 flex-col gap-4 rounded-lg p-2 min-h-[200px] transition-colors",
-                config.bgColor
-              )}
-            >
-              {column.tasks.length === 0 ? (
-                <div className="flex flex-1 items-center justify-center text-center p-4">
-                  <p className="text-sm text-muted-foreground">
-                    {t("empty_column_placeholder")}
-                  </p>
-                </div>
-              ) : (
-                <AnimatePresence>
-                  {column.tasks.map((todo) => (
-                    <TodoCard
-                      key={todo.id}
-                      todo={todo}
-                      allTags={allTags}
-                      onDelete={handleOptimisticDelete}
-                      isPendingDeletion={pendingDeletionTodoIds.includes(
-                        todo.id
-                      )}
-                    />
-                  ))}
-                </AnimatePresence>
-              )}
-              {hasMore && (
-                <Button
-                  onClick={() => loadMore(status)}
-                  disabled={isLoading}
-                  variant="ghost"
-                  size="sm"
-                  className="mt-2 text-muted-foreground cursor-pointer"
-                >
-                  {isLoading ? (
-                    <ButtonSpinner className="text-muted-foreground" />
-                  ) : (
-                    <>
-                      <Plus className="h-4 w-4 mr-2" />
-                      {t("load_more_button")}
-                    </>
-                  )}
-                </Button>
-              )}
-            </div>
-          </div>
-        );
-      })}
-    </div>
+          return (
+            <DroppableColumn key={status} status={status}>
+              <div className="flex items-center gap-2">
+                <config.icon className={`h-5 w-5 ${config.color}`} />
+                <h2 className="text-lg font-semibold tracking-tight">
+                  {t(`status_${status.toLowerCase()}` as string)} (
+                  {column.total})
+                </h2>
+              </div>
+              <div
+                className={cn(
+                  "flex flex-1 flex-col gap-4 rounded-lg p-2 min-h-[200px] transition-colors",
+                  config.bgColor
+                )}
+              >
+                {column.tasks.length === 0 ? (
+                  <div className="flex flex-1 items-center justify-center text-center p-4">
+                    <p className="text-sm text-muted-foreground">
+                      {t("empty_column_placeholder")}
+                    </p>
+                  </div>
+                ) : (
+                  <AnimatePresence>
+                    {column.tasks.map((todo) =>
+                      activeTodo?.id !== todo.id ? (
+                        <TodoCard
+                          key={todo.id}
+                          todo={todo}
+                          allTags={allTags}
+                          onDelete={handleOptimisticDelete}
+                          isPendingDeletion={pendingDeletionTodoIds.includes(
+                            todo.id
+                          )}
+                        />
+                      ) : null
+                    )}
+                  </AnimatePresence>
+                )}
+                {hasMore && (
+                  <Button
+                    onClick={() => loadMore(status)}
+                    disabled={isPending}
+                    variant="ghost"
+                    size="sm"
+                    className="mt-2 text-muted-foreground cursor-pointer"
+                  >
+                    {isPending ? (
+                      <ButtonSpinner className="text-muted-foreground" />
+                    ) : (
+                      <>
+                        <Plus className="h-4 w-4 mr-2" />
+                        {t("load_more_button")}
+                      </>
+                    )}
+                  </Button>
+                )}
+              </div>
+            </DroppableColumn>
+          );
+        })}
+      </div>
+
+      <DragOverlay>
+        {activeTodo ? (
+          <TodoCard todo={activeTodo} allTags={allTags} onDelete={() => {}} />
+        ) : null}
+      </DragOverlay>
+    </DndContext>
   );
 }
