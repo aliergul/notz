@@ -125,10 +125,13 @@ export default function TodoBoard({
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
-    setActiveTodo(null);
     const { active, over } = event;
 
-    if (!over) return;
+    setActiveTodo(null);
+
+    if (!over) {
+      return;
+    }
 
     const activeId = active.id.toString();
     const overId = over.id.toString() as TodoStatus;
@@ -150,24 +153,31 @@ export default function TodoBoard({
       return;
     }
 
-    startTransition(() => {
-      setColumnsData((prev) => {
-        const newColumns = { ...prev };
-        newColumns[startColumn!].tasks = newColumns[startColumn!].tasks.filter(
+    setColumnsData((prev) => {
+      const newColumns = { ...prev };
+      newColumns[startColumn!] = {
+        ...newColumns[startColumn!],
+        tasks: newColumns[startColumn!].tasks.filter(
           (task) => task.id !== activeId
-        );
-        newColumns[endColumn].tasks.unshift({
-          ...draggedTodo!,
-          status: endColumn,
-        });
-        return newColumns;
-      });
+        ),
+        total: newColumns[startColumn!].total - 1,
+      };
 
-      updateTodoStatusByDrag(activeId, endColumn).then((result) => {
-        if (result?.error) {
-          router.refresh();
-        }
-      });
+      newColumns[endColumn] = {
+        ...newColumns[endColumn],
+        tasks: [
+          { ...draggedTodo!, status: endColumn },
+          ...newColumns[endColumn].tasks,
+        ],
+        total: newColumns[endColumn].total + 1,
+      };
+      return newColumns;
+    });
+
+    updateTodoStatusByDrag(activeId, endColumn).then((result) => {
+      if (result?.error) {
+        router.refresh();
+      }
     });
   };
 

@@ -246,5 +246,7 @@ export async function updateTodoStatusByDrag(
     return { error: "update_todo_unexpected_err" };
   }
 
+  revalidatePath("/dashboard/todos");
+
   return { success: "update_todo_success" };
 }
