@@ -32,6 +32,7 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
+import { toast } from "sonner";
 
 type TodoWithTags = Todo & { tags: Tag[] };
 
@@ -86,6 +87,7 @@ export default function TodoBoard({
   allTags,
 }: TodoBoardProps) {
   const t = useTranslations("todos");
+  const t_notify = useTranslations("notifications");
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -176,7 +178,10 @@ export default function TodoBoard({
 
     updateTodoStatusByDrag(activeId, endColumn).then((result) => {
       if (result?.error) {
+        toast.error(t_notify(result.error as string));
         router.refresh();
+      } else {
+        toast.success(t_notify(result.success as string));
       }
     });
   };
@@ -185,8 +190,14 @@ export default function TodoBoard({
     startTransition(async () => {
       setPendingDeletionTodoIds((prev) => [...prev, todoId]);
       const action = isPermanent ? permanentDeleteTodo : softDeleteTodo;
-      await action(todoId);
-      router.refresh();
+      const result = await action(todoId);
+
+      if (result?.error) {
+        toast.error(t_notify(result.error as string));
+      } else {
+        toast.success(t_notify(result.success as string));
+        router.refresh();
+      }
     });
   };
 

@@ -11,6 +11,7 @@ import NewTagDialog from "./NewTagDialog";
 import TagFilters from "./TagFilters";
 import { Loader2 } from "lucide-react";
 import { cn } from "../../lib/utils";
+import { toast } from "sonner";
 
 interface TagListProps {
   initialTags: Tag[];
@@ -18,6 +19,7 @@ interface TagListProps {
 
 export default function TagList({ initialTags }: TagListProps) {
   const t = useTranslations("tags");
+  const t_notify = useTranslations("notifications");
   const router = useRouter();
   const [tags, setTags] = useState(initialTags);
   const [isPending, startTransition] = useTransition();
@@ -41,8 +43,15 @@ export default function TagList({ initialTags }: TagListProps) {
     startTransition(async () => {
       setPendingDeletionTagIds((prev) => [...prev, tagId]);
       const action = isPermanent ? permanentDeleteTag : softDeleteTag;
-      await action(tagId);
-      router.refresh();
+      const result = await action(tagId);
+
+      if (result?.error) {
+        toast.error(t_notify(result.error as string));
+        throw new Error(result.error);
+      } else {
+        toast.success(t_notify(result.success as string));
+        router.refresh();
+      }
     });
   };
 

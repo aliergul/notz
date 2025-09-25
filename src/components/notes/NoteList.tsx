@@ -14,6 +14,7 @@ import ButtonSpinner from "../spinner";
 import { useTranslations } from "next-intl";
 import { Plus } from "lucide-react";
 import { AnimatePresence } from "framer-motion";
+import { toast } from "sonner";
 
 type NoteWithTags = Note & { tags: Tag[] };
 
@@ -29,6 +30,7 @@ export default function NoteList({
   allTags,
 }: NoteListProps) {
   const t = useTranslations("notes");
+  const t_notify = useTranslations("notifications");
   const router = useRouter();
   const searchParams = useSearchParams();
   const [notes, setNotes] = useState(initialNotes);
@@ -70,9 +72,14 @@ export default function NoteList({
     setPendingDeletionNoteIds((prev) => [...prev, noteId]);
 
     const action = isPermanent ? permanentDeleteNote : softDeleteNote;
-    await action(noteId);
+    const result = await action(noteId);
 
-    router.refresh();
+    if (result?.error) {
+      toast.error(t_notify(result.error as string));
+    } else {
+      toast.success(t_notify(result?.success as string));
+      router.refresh();
+    }
   };
 
   if (notes.length === 0) {

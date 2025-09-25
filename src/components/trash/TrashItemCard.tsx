@@ -6,6 +6,9 @@ import { permanentDeleteItem, restoreItem } from "@/actions/trash";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import clsx from "clsx";
+import { toast } from "sonner";
+import ButtonSpinner from "../spinner";
+import { useState } from "react";
 
 type ItemType = "note" | "todo" | "tag";
 
@@ -24,7 +27,10 @@ export default function TrashItemCard({
 }: TrashItemCardProps) {
   const displayName = "title" in item ? item.title : item.name;
   const t = useTranslations("trash");
+  const t_notify = useTranslations("notifications");
   const format = useFormatter();
+  const [isRestore, setIsRestore] = useState(false);
+  const [isPermanent, setIsPermanent] = useState(false);
 
   return (
     <motion.div
@@ -60,26 +66,45 @@ export default function TrashItemCard({
             size="sm"
             variant="outline"
             className="cursor-pointer"
-            onClick={() =>
+            onClick={() => {
+              setIsRestore(true);
               onActionStart(item.id, async () => {
-                await restoreItem(item.id, type);
-              })
-            }
+                const result = await restoreItem(item.id, type);
+                if (result?.error) {
+                  toast.error(t_notify(result.error as string));
+                  setIsRestore(false);
+                } else {
+                  setIsRestore(false);
+                  toast.success(t_notify(result?.success as string));
+                }
+              });
+            }}
             disabled={isPending}
           >
+            {isRestore && <ButtonSpinner />}
             {t("restore")}
           </Button>
           <Button
             size="sm"
             variant="destructive"
             className="cursor-pointer"
-            onClick={() =>
+            onClick={() => {
+              setIsPermanent(true);
               onActionStart(item.id, async () => {
-                await permanentDeleteItem(item.id, type);
-              })
-            }
+                setIsPermanent(true);
+                const result = await permanentDeleteItem(item.id, type);
+                if (result?.error) {
+                  setIsPermanent(false);
+                  toast.error(t_notify(result.error as string));
+                } else {
+                  setIsPermanent(false);
+                  toast.success(t_notify(result?.success as string));
+                }
+              });
+            }}
             disabled={isPending}
           >
+            {isPermanent && <ButtonSpinner />}
             {t("delete_permanently")}
           </Button>
         </div>

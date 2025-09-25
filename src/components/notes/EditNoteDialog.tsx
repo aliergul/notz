@@ -19,6 +19,7 @@ import { updateNote } from "@/actions/notes";
 import ButtonSpinner from "../spinner";
 import TagSelector from "../tags/TagSelector";
 import MarkdownToolbar from "./MarkdownToolbar";
+import { toast } from "sonner";
 
 type NoteWithTags = Note & { tags: Tag[] };
 
@@ -38,7 +39,6 @@ export default function EditNoteDialog({
   const t_notes = useTranslations("notes");
   const t_notify = useTranslations("notifications");
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const contentRef = useRef<HTMLTextAreaElement>(
     null
   ) as React.RefObject<HTMLTextAreaElement>;
@@ -46,7 +46,6 @@ export default function EditNoteDialog({
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
-    setError(null);
 
     const formData = new FormData(event.currentTarget);
     const result = await updateNote(note.id, formData);
@@ -54,8 +53,9 @@ export default function EditNoteDialog({
     setIsLoading(false);
 
     if (result?.error) {
-      setError(t_notify(result.error as string));
+      toast.error(t_notify(result.error as string));
     } else {
+      toast.success(t_notify(result?.success as string));
       onOpenChange(false);
     }
   };
@@ -110,11 +110,6 @@ export default function EditNoteDialog({
               />
             </div>
           </div>
-          {error && (
-            <p className="col-span-4 text-center text-sm font-medium text-red-500">
-              {error}
-            </p>
-          )}
         </form>
         <DialogFooter>
           <Button

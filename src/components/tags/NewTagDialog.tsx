@@ -18,6 +18,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { createTag } from "@/actions/tags";
 import ButtonSpinner from "@/components/spinner";
 import { PlusCircle } from "lucide-react";
+import { toast } from "sonner";
 
 interface NewTagDialogProps {
   onActionStart: (action: () => Promise<void>) => void;
@@ -27,12 +28,10 @@ export default function NewTagDialog({ onActionStart }: NewTagDialogProps) {
   const t = useTranslations("tags");
   const t_notify = useTranslations("notifications");
   const [open, setOpen] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setError(null);
     setIsSubmitting(true);
 
     onActionStart(async () => {
@@ -40,10 +39,11 @@ export default function NewTagDialog({ onActionStart }: NewTagDialogProps) {
         const formData = new FormData(event.currentTarget);
         const result = await createTag(formData);
         if (result?.error) {
-          setError(t_notify(result.error as string));
+          toast.error(t_notify(result.error as string));
           setIsSubmitting(false);
           throw new Error(result.error);
         } else {
+          toast.success(t_notify(result.success as string));
           setOpen(false);
           setIsSubmitting(false);
         }
@@ -97,11 +97,6 @@ export default function NewTagDialog({ onActionStart }: NewTagDialogProps) {
               className="col-span-3 p-1 h-10 w-full"
             />
           </div>
-          {error && (
-            <p className="col-span-4 text-center text-sm font-medium text-red-500">
-              {error}
-            </p>
-          )}
         </form>
         <DialogFooter>
           <Button

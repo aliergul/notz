@@ -22,6 +22,7 @@ import ButtonSpinner from "@/components/spinner";
 import TagSelector from "@/components/tags/TagSelector";
 import { PlusCircle } from "lucide-react";
 import MarkdownToolbar from "./MarkdownToolbar";
+import { toast } from "sonner";
 
 interface NewNoteDialogProps {
   allTags: Tag[];
@@ -33,7 +34,6 @@ export default function NewNoteDialog({ allTags }: NewNoteDialogProps) {
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const contentRef = useRef<HTMLTextAreaElement>(
     null
@@ -41,15 +41,15 @@ export default function NewNoteDialog({ allTags }: NewNoteDialogProps) {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setError(null);
 
     startTransition(async () => {
       const formData = new FormData(event.currentTarget);
       const result = await createNote(formData);
 
       if (result?.error) {
-        setError(t_notify(result.error as string));
+        toast.error(t_notify(result.error as string));
       } else {
+        toast.success(t_notify(result.success as string));
         setOpen(false);
         router.refresh();
       }
@@ -105,11 +105,6 @@ export default function NewNoteDialog({ allTags }: NewNoteDialogProps) {
               <TagSelector allTags={allTags} />
             </div>
           </div>
-          {error && (
-            <p className="col-span-4 text-center text-sm font-medium text-red-500">
-              {error}
-            </p>
-          )}
         </form>
         <DialogFooter>
           <Button

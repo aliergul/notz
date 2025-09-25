@@ -36,6 +36,7 @@ import { createTodo } from "@/actions/todos";
 import ButtonSpinner from "../spinner";
 import { tr } from "date-fns/locale";
 import TagSelector from "../tags/TagSelector";
+import { toast } from "sonner";
 
 interface NewTodoDialogProps {
   allTags: Tag[];
@@ -47,14 +48,12 @@ export default function NewTodoDialog({ allTags }: NewTodoDialogProps) {
   const locale = useLocale();
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [date, setDate] = useState<Date | undefined>();
   const [openCalendar, setOpenCalendar] = useState<boolean>(false);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
-    setError(null);
 
     const formData = new FormData(event.currentTarget);
     if (date) {
@@ -65,8 +64,9 @@ export default function NewTodoDialog({ allTags }: NewTodoDialogProps) {
     setIsLoading(false);
 
     if (result.error) {
-      setError(t_notify(result.error as string));
+      toast.error(t_notify(result.error as string));
     } else {
+      toast.success(t_notify(result.success as string));
       setOpen(false);
       setDate(undefined);
     }
@@ -217,12 +217,6 @@ export default function NewTodoDialog({ allTags }: NewTodoDialogProps) {
               <TagSelector allTags={allTags} />
             </div>
           </div>
-
-          {error && (
-            <p className="col-span-4 text-center text-sm font-medium text-red-500">
-              {error}
-            </p>
-          )}
         </form>
         <DialogFooter>
           <Button

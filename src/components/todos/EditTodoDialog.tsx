@@ -36,6 +36,7 @@ import { cn } from "@/lib/utils";
 import { updateTodo } from "@/actions/todos";
 import ButtonSpinner from "../spinner";
 import TagSelector from "../tags/TagSelector";
+import { toast } from "sonner";
 
 type TodoWithTags = Todo & { tags: Tag[] };
 
@@ -56,13 +57,11 @@ export default function EditTodoDialog({
   const t_notify = useTranslations("notifications");
   const locale = useLocale();
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [date, setDate] = useState<Date | undefined>(todo.dueDate || undefined);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
-    setError(null);
 
     const formData = new FormData(event.currentTarget);
     if (date) {
@@ -75,8 +74,9 @@ export default function EditTodoDialog({
     setIsLoading(false);
 
     if (result?.error) {
-      setError(t_notify(result.error as string));
+      toast.error(t_notify(result.error as string));
     } else {
+      toast.success(t_notify(result.success as string));
       onOpenChange(false);
     }
   };
@@ -229,12 +229,6 @@ export default function EditTodoDialog({
               />
             </div>
           </div>
-
-          {error && (
-            <p className="col-span-4 text-center text-sm font-medium text-red-500">
-              {error}
-            </p>
-          )}
         </form>
         <DialogFooter>
           <Button

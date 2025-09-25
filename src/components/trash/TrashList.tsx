@@ -106,7 +106,7 @@ export default function TrashList({
                 ))
               ) : (
                 <div className="text-center text-muted-foreground p-8">
-                  {t("empty_tab_placeholder")}
+                  {t("empty_tab_notes")}
                 </div>
               )}
             </AnimatePresence>
@@ -133,7 +133,7 @@ export default function TrashList({
                 ))
               ) : (
                 <div className="text-center text-muted-foreground p-8">
-                  {t("empty_tab_placeholder")}
+                  {t("empty_tab_todos")}
                 </div>
               )}
             </AnimatePresence>
@@ -160,7 +160,7 @@ export default function TrashList({
                 ))
               ) : (
                 <div className="text-center text-muted-foreground p-8">
-                  {t("empty_tab_placeholder")}
+                  {t("empty_tab_tags")}
                 </div>
               )}
             </AnimatePresence>

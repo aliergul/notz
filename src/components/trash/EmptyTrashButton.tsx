@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import ButtonSpinner from "@/components/spinner";
 import { Trash2 } from "lucide-react";
+import { toast } from "sonner";
 
 type ItemType = "note" | "todo" | "tag";
 
@@ -34,19 +35,19 @@ export default function EmptyTrashButton({
   const t = useTranslations("trash");
   const t_notify = useTranslations("notifications");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const handleEmptyTrash = async () => {
-    setError(null);
     setIsSubmitting(true);
 
     onActionStart(async () => {
       try {
         const result = await emptyTrashByType(type);
         if (result?.error) {
-          setError(t_notify(result.error as string));
+          toast.error(t_notify(result.error as string));
           setIsSubmitting(false);
           throw new Error(result.error);
+        } else {
+          toast.success(t_notify(result.success as string));
         }
       } catch {}
     });
@@ -77,11 +78,6 @@ export default function EmptyTrashButton({
             {t("empty_trash_confirmation_desc", { itemCount })}
           </AlertDialogDescription>
         </AlertDialogHeader>
-        {error && (
-          <p className="text-center text-sm font-medium text-red-500">
-            {error}
-          </p>
-        )}
         <AlertDialogFooter>
           <AlertDialogCancel className="cursor-pointer">
             {t("cancel")}

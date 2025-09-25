@@ -17,6 +17,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { updateTag } from "@/actions/tags";
 import ButtonSpinner from "@/components/spinner";
+import { toast } from "sonner";
 
 interface EditTagDialogProps {
   tag: Tag;
@@ -33,23 +34,23 @@ export default function EditTagDialog({
 }: EditTagDialogProps) {
   const t = useTranslations("tags");
   const t_notify = useTranslations("notifications");
-  const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setError(null);
     setIsSubmitting(true);
 
     onActionStart(async () => {
       try {
         const formData = new FormData(event.currentTarget);
         const result = await updateTag(tag.id, formData);
+
         if (result?.error) {
-          setError(t_notify(result.error as string));
+          toast.error(t_notify(result.error as string));
           setIsSubmitting(false);
           throw new Error(result.error);
         } else {
+          toast.success(t_notify(result.success as string));
           onOpenChange(false);
           setIsSubmitting(false);
         }
@@ -110,11 +111,6 @@ export default function EditTagDialog({
               className="col-span-3 p-1 h-10 w-full"
             />
           </div>
-          {error && (
-            <p className="col-span-4 text-center text-sm font-medium text-red-500">
-              {error}
-            </p>
-          )}
         </form>
         <DialogFooter>
           <Button
