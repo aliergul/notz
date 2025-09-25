@@ -81,9 +81,9 @@ export default function TagCard({
           />
           <div className="flex flex-col">
             <h3 className="font-semibold">{tag.name}</h3>
-            {tag.description && (
-              <p className="text-sm text-muted-foreground">{tag.description}</p>
-            )}
+            <p className="text-sm text-muted-foreground truncate">
+              {tag.description || "\u00A0"}
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-2">
