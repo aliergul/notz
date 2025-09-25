@@ -187,8 +187,8 @@ export default function TodoBoard({
   };
 
   const handleOptimisticDelete = (todoId: string, isPermanent: boolean) => {
+    setPendingDeletionTodoIds((prev) => [...prev, todoId]);
     startTransition(async () => {
-      setPendingDeletionTodoIds((prev) => [...prev, todoId]);
       const action = isPermanent ? permanentDeleteTodo : softDeleteTodo;
       const result = await action(todoId);
 

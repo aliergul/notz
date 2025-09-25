@@ -49,8 +49,8 @@ export default function TrashList({
   };
 
   const handleItemAction = (itemId: string, action: () => Promise<void>) => {
+    setPendingActionItemId(itemId);
     startTransition(async () => {
-      setPendingActionItemId(itemId);
       try {
         await action();
         router.refresh();

@@ -40,8 +40,8 @@ export default function TagList({ initialTags }: TagListProps) {
   };
 
   const handleOptimisticDelete = (tagId: string, isPermanent: boolean) => {
+    setPendingDeletionTagIds((prev) => [...prev, tagId]);
     startTransition(async () => {
-      setPendingDeletionTagIds((prev) => [...prev, tagId]);
       const action = isPermanent ? permanentDeleteTag : softDeleteTag;
       const result = await action(tagId);
 
