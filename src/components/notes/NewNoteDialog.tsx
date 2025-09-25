@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import type { Tag } from "@prisma/client";
@@ -21,6 +21,7 @@ import { createNote } from "@/actions/notes";
 import ButtonSpinner from "@/components/spinner";
 import TagSelector from "@/components/tags/TagSelector";
 import { PlusCircle } from "lucide-react";
+import MarkdownToolbar from "./MarkdownToolbar";
 
 interface NewNoteDialogProps {
   allTags: Tag[];
@@ -34,6 +35,9 @@ export default function NewNoteDialog({ allTags }: NewNoteDialogProps) {
   const [open, setOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const contentRef = useRef<HTMLTextAreaElement>(
+    null
+  ) as React.RefObject<HTMLTextAreaElement>;
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -78,16 +82,20 @@ export default function NewNoteDialog({ allTags }: NewNoteDialogProps) {
             </Label>
             <Input id="title" name="title" className="col-span-3" />
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="content" className="text-right">
+          <div className="grid grid-cols-4 items-start gap-4">
+            <Label htmlFor="content" className="text-right pt-2">
               {t_notes("note_content")}
             </Label>
-            <Textarea
-              id="content"
-              name="content"
-              required
-              className="col-span-3"
-            />
+            <div className="col-span-3">
+              <MarkdownToolbar textareaRef={contentRef} />
+              <Textarea
+                id="content"
+                name="content"
+                required
+                ref={contentRef}
+                className="rounded-t-none border-t-0"
+              />
+            </div>
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="tags" className="text-right">

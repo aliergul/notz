@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import type { Note, Tag } from "@prisma/client";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { updateNote } from "@/actions/notes";
 import ButtonSpinner from "../spinner";
 import TagSelector from "../tags/TagSelector";
+import MarkdownToolbar from "./MarkdownToolbar";
 
 type NoteWithTags = Note & { tags: Tag[] };
 
@@ -38,6 +39,9 @@ export default function EditNoteDialog({
   const t_notify = useTranslations("notifications");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const contentRef = useRef<HTMLTextAreaElement>(
+    null
+  ) as React.RefObject<HTMLTextAreaElement>;
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -81,17 +85,21 @@ export default function EditNoteDialog({
               className="col-span-3"
             />
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="content" className="text-right">
+          <div className="grid grid-cols-4 items-start gap-4">
+            <Label htmlFor="content" className="text-right pt-2">
               {t_notes("note_content")}
             </Label>
-            <Textarea
-              id="content"
-              name="content"
-              defaultValue={note.content}
-              required
-              className="col-span-3"
-            />
+            <div className="col-span-3">
+              <MarkdownToolbar textareaRef={contentRef} />
+              <Textarea
+                id="content"
+                name="content"
+                defaultValue={note.content}
+                required
+                ref={contentRef}
+                className="rounded-t-none border-t-0"
+              />
+            </div>
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label className="text-right">{t_notes("tags_label")}</Label>

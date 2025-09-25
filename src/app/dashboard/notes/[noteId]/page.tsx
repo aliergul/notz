@@ -7,6 +7,8 @@ import prisma from "@/lib/prisma";
 import { ArrowLeft } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
 
 interface NoteDetailPageProps {
   params: Promise<{ noteId: string }>;
@@ -67,7 +69,9 @@ export default async function NoteDetailPage({ params }: NoteDetailPageProps) {
         )}
 
         <div className="prose dark:prose-invert max-w-none">
-          <p>{note.content}</p>
+          <ReactMarkdown rehypePlugins={[rehypeRaw]}>
+            {note.content}
+          </ReactMarkdown>
         </div>
       </div>
     </div>

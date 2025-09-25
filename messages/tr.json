@@ -99,7 +99,9 @@
     "all_tags": "Tüm Etiketler",
     "back_to_notes": "Tüm Notlara Geri Dön",
     "view_note_details": "Not detayına git",
-    "load_more_button": "Daha Fazla Yükle"
+    "load_more_button": "Daha Fazla Yükle",
+    "italic": "İtalik Metin",
+    "bold": "Kalın Metin"
   },
   "trash": {
     "title": "Çöp Kutusu",

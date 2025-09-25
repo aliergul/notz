@@ -99,7 +99,9 @@
     "all_tags": "All Tags",
     "back_to_notes": "Back to All Notes",
     "view_note_details": "View note details",
-    "load_more_button": "Load More"
+    "load_more_button": "Load More",
+    "italic": "Italic Text",
+    "bold": "Bold Text"
   },
   "trash": {
     "title": "Trash",
