@@ -73,7 +73,7 @@ export default function TagCard({
       {isPendingDeletion && (
         <div className="absolute inset-0 z-30 flex items-center justify-center rounded-lg backdrop-blur-xs"></div>
       )}
-      <div className="flex items-center justify-between rounded-lg border bg-card p-4">
+      <div className="group flex items-center justify-between rounded-lg border bg-card p-4">
         <div className="flex items-center gap-4">
           <div
             className="h-4 w-4 rounded-full"
@@ -91,7 +91,7 @@ export default function TagCard({
             variant="ghost"
             size="icon"
             onClick={() => setIsEditOpen(true)}
-            className="h-8 w-8 cursor-pointer"
+            className="h-8 w-8 cursor-pointer text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity"
           >
             <Pencil className="h-4 w-4" />
           </Button>
@@ -100,7 +100,7 @@ export default function TagCard({
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 cursor-pointer hover:text-red-500"
+                className="h-8 w-8 cursor-pointer text-muted-foreground hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
               >
                 <Trash2 className="h-4 w-4" />
               </Button>
