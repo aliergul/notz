@@ -70,7 +70,11 @@
     "trash_page": "Çöp Kutusu",
     "logout": "Çıkış Yap",
     "profile": "Profil",
-    "navigation_menu": "Ana Menü"
+    "navigation_menu": "Ana Menü",
+    "theme_toggle": "Temayı Değiştir",
+    "theme_light": "Açık",
+    "theme_dark": "Koyu",
+    "theme_system": "Sistem"
   },
   "notes": {
     "empty_page": "Henüz hiç notunuz yok. 'Yeni Not' butonuna tıklayarak başlayın!",

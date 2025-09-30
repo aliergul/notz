@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { AuthForm } from "@/components/auth/AuthForm";
 import { getTranslations } from "next-intl/server";
 import LanguageSwitcher from "@/components/language-switcher";
+import ThemeSwitcher from "@/components/theme-switcher";
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
@@ -32,6 +33,7 @@ export default async function Home() {
 
       <div className="flex flex-col items-center justify-center p-6">
         <AuthForm />
+        <ThemeSwitcher />
         <LanguageSwitcher />
       </div>
     </main>

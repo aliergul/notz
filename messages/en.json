@@ -70,7 +70,11 @@
     "trash_page": "Trash",
     "logout": "Logout",
     "profile": "Profile",
-    "navigation_menu": "Main Menu"
+    "navigation_menu": "Main Menu",
+    "theme_toggle": "Toggle Theme",
+    "theme_light": "Light",
+    "theme_dark": "Dark",
+    "theme_system": "System"
   },
   "notes": {
     "empty_page": "You don't have any notes yet. Start by clicking the 'New Note' button!",

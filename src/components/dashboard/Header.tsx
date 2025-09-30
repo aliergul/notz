@@ -1,13 +1,14 @@
 "use client";
 
 import { User } from "next-auth";
-import UserNav from "./UserNav"; // Değişiklik: Import yolu göreceli yapıldı
-import LanguageSwitcher from "../language-switcher"; // Değişiklik: Import yolu göreceli yapıldı
+import UserNav from "./UserNav";
+import LanguageSwitcher from "../language-switcher";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import Sidebar from "./Sidebar";
 import { useState } from "react";
+import ThemeSwitcher from "../theme-switcher";
 
 interface HeaderProps {
   user: User;
@@ -35,6 +36,7 @@ export default function Header({ user }: HeaderProps) {
       </Sheet>
 
       <div className="w-full flex-1" />
+      <ThemeSwitcher />
       <LanguageSwitcher />
       <UserNav user={user} />
     </header>

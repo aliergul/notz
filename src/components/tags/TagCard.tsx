@@ -82,7 +82,7 @@ export default function TagCard({
           <div className="flex flex-col">
             <h3 className="font-semibold">{tag.name}</h3>
             <p className="text-sm text-muted-foreground truncate">
-              {tag.description || "\u00A0"}
+              {tag.description || "-"}
             </p>
           </div>
         </div>

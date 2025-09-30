@@ -23,7 +23,7 @@ export default async function RootLayout({
   const timeZone = await getTimeZone();
 
   return (
-    <html lang={locale}>
+    <html lang={locale} suppressHydrationWarning>
       <body className={figtree.className}>
         <Providers i18n={{ locale, messages, timeZone }}>{children}</Providers>
       </body>
