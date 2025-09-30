@@ -193,5 +193,17 @@
     "tag_not_found": "No tag found.",
     "tag_search": "Search tags...",
     "search_placeholder": "Search in tags..."
+  },
+  "dashboard": {
+    "activity_summary": "Here’s a summary of your activities in Notz.",
+    "welcome": "Welcome",
+    "active_todos": "Active Tasks",
+    "active_todos_info": "Your last 5 unfinished tasks are listed here.",
+    "last_notes": "Recent Notes",
+    "last_notes_info": "Your 5 most recently edited notes are listed here.",
+    "view_details": "View",
+    "no_notes_yet": "You haven’t created any notes yet.",
+    "link_to_todos": "Go to Dashboard",
+    "no_todos_yet": "You don’t have any active tasks."
   }
 }

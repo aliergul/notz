@@ -27,6 +27,7 @@ export default async function TodosPage({ searchParams }: TodosPageProps) {
     userId: session.user.id,
     softDelete: false,
   };
+
   if (q) {
     baseWhereCondition.OR = [
       { title: { contains: q, mode: "insensitive" } },
@@ -37,53 +38,45 @@ export default async function TodosPage({ searchParams }: TodosPageProps) {
     baseWhereCondition.tags = { some: { id: tag } };
   }
 
-  const [notStartedTasks, inProgressTasks, doneTasks, statusCounts, allTags] =
-    await Promise.all([
-      prisma.todo.findMany({
-        where: { ...baseWhereCondition, status: TodoStatus.NOT_STARTED },
-        include: { tags: { where: { softDelete: false } } },
-        orderBy: { updatedAt: "desc" },
-        take: 10,
-      }),
-      prisma.todo.findMany({
-        where: { ...baseWhereCondition, status: TodoStatus.IN_PROGRESS },
-        include: { tags: { where: { softDelete: false } } },
-        orderBy: { updatedAt: "desc" },
-        take: 10,
-      }),
-      prisma.todo.findMany({
-        where: { ...baseWhereCondition, status: TodoStatus.DONE },
-        include: { tags: { where: { softDelete: false } } },
-        orderBy: { updatedAt: "desc" },
-        take: 10,
-      }),
-      prisma.todo.groupBy({
-        by: ["status"],
-        where: baseWhereCondition,
-        _count: {
-          status: true,
-        },
-      }),
-      prisma.tag.findMany({
-        where: { userId: session.user.id, softDelete: false },
-        orderBy: { createdAt: "desc" },
-      }),
-    ]);
+  const [allTodos, statusCounts, allTags] = await Promise.all([
+    prisma.todo.findMany({
+      where: baseWhereCondition,
+      include: { tags: { where: { softDelete: false } } },
+      orderBy: { updatedAt: "desc" },
+    }),
+    prisma.todo.groupBy({
+      by: ["status"],
+      where: baseWhereCondition,
+      _count: {
+        status: true,
+      },
+    }),
+    prisma.tag.findMany({
+      where: { userId: session.user.id, softDelete: false },
+      orderBy: { createdAt: "desc" },
+    }),
+  ]);
 
   const getCount = (status: TodoStatus) =>
     statusCounts.find((item) => item.status === status)?._count.status || 0;
 
   const initialColumnsData = {
     [TodoStatus.NOT_STARTED]: {
-      tasks: notStartedTasks,
+      tasks: allTodos
+        .filter((todo) => todo.status === TodoStatus.NOT_STARTED)
+        .slice(0, 10),
       total: getCount(TodoStatus.NOT_STARTED),
     },
     [TodoStatus.IN_PROGRESS]: {
-      tasks: inProgressTasks,
+      tasks: allTodos
+        .filter((todo) => todo.status === TodoStatus.IN_PROGRESS)
+        .slice(0, 10),
       total: getCount(TodoStatus.IN_PROGRESS),
     },
     [TodoStatus.DONE]: {
-      tasks: doneTasks,
+      tasks: allTodos
+        .filter((todo) => todo.status === TodoStatus.DONE)
+        .slice(0, 10),
       total: getCount(TodoStatus.DONE),
     },
   };

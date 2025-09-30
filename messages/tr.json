@@ -193,5 +193,17 @@
     "tag_not_found": "Etiket bulunamadı.",
     "tag_search": "Etiket ara...",
     "search_placeholder": "Etiketlerde ara..."
+  },
+  "dashboard": {
+    "activity_summary": "İşte Notz'daki aktivitelerinin bir özeti.",
+    "welcome": "Hoş geldin",
+    "active_todos": "Aktif Görevler",
+    "active_todos_info": "Tamamlanmamış son 5 görevin burada listelenir.",
+    "last_notes": "Son Notlar",
+    "last_notes_info": "En son düzenlediğin 5 notun burada listelenir.",
+    "view_details": "Görüntüle",
+    "no_notes_yet": "Henüz hiç not oluşturmadın.",
+    "link_to_todos": "Panoya Git",
+    "no_todos_yet": "Aktif bir görevin bulunmuyor."
   }
 }
