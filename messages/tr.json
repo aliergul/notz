@@ -205,5 +205,11 @@
     "no_notes_yet": "Henüz hiç not oluşturmadın.",
     "link_to_todos": "Panoya Git",
     "no_todos_yet": "Aktif bir görevin bulunmuyor."
+  },
+  "profile": {
+    "profile_information": "Profil Bilgileri",
+    "profile_description": "Hesap bilgilerinizi buradan görüntüleyebilirsiniz.",
+    "name": "İsim",
+    "email": "E-posta"
   }
 }

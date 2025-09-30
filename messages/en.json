@@ -205,5 +205,11 @@
     "no_notes_yet": "You haven’t created any notes yet.",
     "link_to_todos": "Go to Dashboard",
     "no_todos_yet": "You don’t have any active tasks."
+  },
+  "profile": {
+    "profile_information": "Profile Information",
+    "profile_description": "You can view your account information here.",
+    "name": "Name",
+    "email": "Email"
   }
 }

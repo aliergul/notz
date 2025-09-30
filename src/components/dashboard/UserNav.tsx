@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { LogOut, User as UserIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 
 interface UserNavProps {
   user: User;
@@ -48,10 +49,12 @@ export default function UserNav({ user }: UserNavProps) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem className="cursor-pointer">
-            <UserIcon className="mr-2 h-4 w-4" />
-            <span>{t("profile")}</span>
-          </DropdownMenuItem>
+          <Link href="/dashboard/profile">
+            <DropdownMenuItem className="cursor-pointer">
+              <UserIcon className="mr-2 h-4 w-4" />
+              <span>{t("profile")}</span>
+            </DropdownMenuItem>
+          </Link>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => signOut()} className="cursor-pointer">
